@@ -2,7 +2,8 @@
 import pandas as pd
 from shiny import module, reactive, render, ui
 
-from .. import data, viz
+from .. import viz
+from .. import data
 from ..common import multi_select, note, reset_button, selected
 
 MONTHS = data.FISCAL_MONTHS   # Jul ... Jun
