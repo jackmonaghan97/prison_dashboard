@@ -154,7 +154,11 @@ def page_server(input, output, session):
                                     line=dict(color=viz.SURFACE, width=1.5)),
                         hovertemplate="%{y:+,.0f}")
         fig.update_layout(xaxis=dict(type="category", tickangle=-45 if len(f) > 12 else 0))
-        return fig
+        return viz.describe(fig, f"Bar chart of prison admissions (above zero) and exits (below zero) per "
+                                 f"{GRAIN[input.grain()].lower()}, {labels[0]} to {labels[-1]}, with a line for net "
+                                 f"change. Totals: {f['Admissions'].sum():,.0f} admissions, {f['Exits'].sum():,.0f} "
+                                 f"exits, net {f['Net change'].sum():+,.0f}; latest period {labels[-1]}: "
+                                 f"{f['Admissions'].iloc[-1]:,.0f} admissions, {f['Exits'].iloc[-1]:,.0f} exits.")
 
     @viz.render_plot
     def type_chart():
@@ -170,7 +174,10 @@ def page_server(input, output, session):
                 fig.add_bar(name=t, x=labels, y=piv[t], marker=viz.bar_marker(viz.ADMTYP_COLOR[t]),
                             hovertemplate=f"<b>{t}</b><br>%{{x}}: %{{y:,.0f}}<extra></extra>")
         fig.update_layout(xaxis=dict(type="category", tickangle=-45 if len(piv) > 12 else 0))
-        return fig
+        tot = piv.sum()
+        return viz.describe(fig, f"Stacked bar chart of prison admissions by type per {GRAIN[g].lower()}, "
+                                 f"{labels[0]} to {labels[-1]}. Totals over the period: "
+                                 f"{viz.alt_values((t, tot[t]) for t in viz.ADMTYP_ORDER if t in tot)}.")
 
     @viz.render_plot
     def reason_chart():
@@ -188,7 +195,8 @@ def page_server(input, output, session):
                     textfont=dict(color=viz.INK_2, size=11),
                     hovertemplate="<b>%{y}</b><br>%{x:,.0f} exits<extra></extra>")
         fig.update_layout(showlegend=False, xaxis_range=[0, g.max() * 1.25])
-        return fig
+        return viz.describe(fig, f"Horizontal bar chart of prison exits by reason, {year_label()}: "
+                                 f"{viz.alt_values(g.iloc[::-1].items())}.")
 
     @render.data_frame
     def table():

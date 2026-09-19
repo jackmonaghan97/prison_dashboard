@@ -5,7 +5,9 @@ Colors follow the entity (a race, a category) and never its rank, so filtering
 never repaints the survivors. Categorical hues are assigned in a fixed order.
 """
 import functools
+import html
 import uuid
+from collections import Counter
 from pathlib import Path
 
 import pandas as pd
@@ -34,6 +36,12 @@ BLUE_TINT = "#ebf6ff"
 SERIES = [BLUE, "#e36209", "#22863a", "#e8a600",
           "#6f42c1", "#d73a49", STEEL, "#8a6d3b"]
 SEQ_BLUE = [BLUE_TINT, "#bcd8f5", "#8fbbea", "#5f9bdc", BLUE, NAVY_2, NAVY]
+# choropleth fills: every stop is at least 3:1 against the page (WCAG 1.4.11), so the
+# lightest counties still stand out from the white county borders and the page
+MAP_SCALE = ["#4f95dd", "#2a7bd0", BLUE, "#0c4a8f", NAVY, "#041d33"]
+MAP_OUTLINE = INK
+# marker shapes cycle with the series colors so lines stay apart without color
+SYMBOLS = ["circle", "square", "diamond", "triangle-up", "cross", "x", "star", "hexagon"]
 DIVERGING = [[0.0, BLUE], [0.5, "#f0efec"], [1.0, "#d73a49"]]
 
 # ---------------------------------------------------------------- fixed entity colors
@@ -129,25 +137,99 @@ def bar_marker(color: str, gap: bool = True) -> dict:
     return m
 
 
+def outer_boundary(geojson: dict) -> tuple[list, list]:
+    """
+    The outline of a set of polygons that tile an area (the state line around the county
+    map), as lon / lat lists with None breaks. Every edge shared by two counties appears
+    twice and cancels; the edges left over are the outside, chained into loops.
+    """
+    edges = Counter()
+    for feat in geojson["features"]:
+        for ring in feat["geometry"]["coordinates"]:
+            pts = [tuple(p) for p in ring]
+            edges.update(frozenset((a, b)) for a, b in zip(pts[:-1], pts[1:]))
+    adj = {}
+    for e, n in edges.items():
+        if n == 1:
+            a, b = tuple(e)
+            adj.setdefault(a, []).append(b)
+            adj.setdefault(b, []).append(a)
+    lons, lats, seen = [], [], set()
+    for start in adj:
+        if start in seen:
+            continue
+        prev, cur = None, start
+        while cur not in seen:
+            seen.add(cur)
+            lons.append(cur[0]); lats.append(cur[1])
+            nxt = [v for v in adj[cur] if v != prev]
+            if not nxt:
+                break
+            prev, cur = cur, nxt[0]
+        lons += [start[0], None]; lats += [start[1], None]     # close the loop
+    return lons, lats
+
+
 def choropleth(geojson: dict, values, *, height: int = 480, tickformat: str = ",.0f",
-               hovertemplate: str, customdata=None, highlight: str | None = None) -> go.Figure:
-    """Illinois county map on the sequential blue ramp. `values` is a Series keyed by county."""
+               hovertemplate: str, customdata=None, highlight: str | None = None,
+               outline: tuple[list, list] | None = None) -> go.Figure:
+    """
+    Illinois county map on MAP_SCALE. `values` is a Series keyed by county; `outline`
+    (lon / lat lists from outer_boundary) is drawn as a black state line.
+    """
+    n = len(MAP_SCALE) - 1
     fig = go.Figure(go.Choropleth(
         geojson=geojson, featureidkey="properties.name",
         locations=values.index, z=values.values,
-        colorscale=[[i / 6, c] for i, c in enumerate(SEQ_BLUE)],
+        colorscale=[[i / n, c] for i, c in enumerate(MAP_SCALE)],
         marker=dict(line=dict(color=SURFACE, width=0.8)),
         colorbar=dict(thickness=10, len=0.6, outlinewidth=0, tickfont=dict(color=MUTED),
                       tickformat=tickformat),
         customdata=customdata, hovertemplate=hovertemplate,
     ))
+    if outline is not None:
+        fig.add_scattergeo(lon=outline[0], lat=outline[1], mode="lines", line=dict(color=MAP_OUTLINE, width=1.5),
+                           hoverinfo="skip", showlegend=False)
     if highlight and highlight in values.index:
         fig.add_choropleth(geojson=geojson, featureidkey="properties.name", locations=[highlight],
                            z=[0], showscale=False, colorscale=[[0, "rgba(0,0,0,0)"], [1, "rgba(0,0,0,0)"]],
-                           marker=dict(line=dict(color=INK, width=2)), hoverinfo="skip")
+                           marker=dict(line=dict(color=INK, width=2.5)), hoverinfo="skip")
     fig.update_layout(**base_layout(height, margin=dict(l=0, r=0, t=0, b=0)))
     fig.update_geos(fitbounds="locations", visible=False, bgcolor=SURFACE, projection_type="mercator")
     return fig
+
+
+def stacked_area(fig: go.Figure, piv: pd.DataFrame, colors: dict, labels=None, *, hover: str = "%{y:,.0f}") -> None:
+    """
+    Stacked area series with a surface-colored seam between bands and each band's name
+    written at its right-hand end, so the stack reads without relying on color alone.
+    """
+    labels = labels or (lambda c: c)
+    cum = piv.cumsum(axis=1)
+    for c in piv.columns:
+        fig.add_scatter(name=labels(c), x=piv.index, y=piv[c], mode="lines", stackgroup="one",
+                        line=dict(width=1.5, color=SURFACE), fillcolor=colors[c], hovertemplate=hover)
+    last = piv.index[-1]
+    ys = {c: cum.loc[last, c] - piv.loc[last, c] / 2 for c in piv.columns if piv.loc[last, c] > 0}
+    gap = 0.045 * float(cum.iloc[-1].max() or 1)             # labels are ~11px; keep them a band apart
+    prev = -gap
+    for c in sorted(ys, key=ys.get):                          # bottom up: push a label up if it would overlap
+        ys[c] = max(ys[c], prev + gap)
+        prev = ys[c]
+        fig.add_annotation(x=last, y=ys[c], text=labels(c), showarrow=False, xanchor="left", xshift=4,
+                           font=dict(size=11, color=INK_2), bgcolor=rgba(SURFACE, 0.85))
+    fig.update_layout(margin=dict(r=110))
+
+
+def describe(fig: go.Figure, text: str) -> go.Figure:
+    """Attach alternative text (what the chart shows, not an analysis) for screen readers."""
+    fig.update_layout(meta={**(fig.layout.meta or {}), "alt": text})
+    return fig
+
+
+def alt_values(pairs, fmt: str = "{:,.0f}") -> str:
+    """'A 1,234; B 567' for the values part of an alt text."""
+    return "; ".join(f"{k} {fmt.format(v)}" for k, v in pairs if not pd.isna(v))
 
 
 def empty_figure(message: str = "No data for this selection", height: int = 360) -> go.Figure:
@@ -155,7 +237,7 @@ def empty_figure(message: str = "No data for this selection", height: int = 360)
     fig.update_layout(xaxis=dict(visible=False), yaxis=dict(visible=False))
     fig.add_annotation(text=message, x=0.5, y=0.5, xref="paper", yref="paper",
                        showarrow=False, font=dict(color=MUTED, size=14))
-    return fig
+    return describe(fig, f"Empty chart: {message.lower()}.")
 
 
 # ---------------------------------------------------------------- rendering
@@ -163,11 +245,18 @@ PLOT_CONFIG = '{"responsive": true, "displayModeBar": false, "scrollZoom": false
 
 
 def plot_html(fig: go.Figure) -> ui.HTML:
-    """A figure as a div + Plotly.newPlot call; plotly.min.js is loaded once by the page."""
+    """
+    A figure as a div + Plotly.newPlot call; plotly.min.js is loaded once by the page. The
+    alt text set with describe() becomes the div's accessible name (role="img") and a
+    visually hidden paragraph after it.
+    """
     div_id = f"plot-{uuid.uuid4().hex}"
     height = fig.layout.height or 360
+    alt = html.escape((fig.layout.meta or {}).get("alt", "Chart"), quote=True)
     return ui.HTML(
-        f'<div id="{div_id}" class="plotly-chart" style="width:100%;height:{height}px"></div>'
+        f'<div id="{div_id}" class="plotly-chart" role="img" aria-label="{alt}" '
+        f'style="width:100%;height:{height}px"></div>'
+        f'<p class="visually-hidden">{alt}</p>'
         f'<script>(function(){{var f={fig.to_json()};'
         f'Plotly.newPlot("{div_id}", f.data, f.layout, {PLOT_CONFIG});}})();</script>'
     )

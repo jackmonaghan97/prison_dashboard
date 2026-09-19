@@ -145,7 +145,7 @@ def page_server(input, output, session):
         return f"{r['days_to_return'].median() / 30.44:.0f} months"
 
     # ---- charts
-    def _bar(g, x, colors, height=300, order=None, labels=None):
+    def _bar(g, x, colors, height=300, order=None, labels=None, what_by="group"):
         if g.empty:
             return viz.empty_figure(height=height)
         if order is not None:
@@ -159,7 +159,10 @@ def page_server(input, output, session):
                     hovertemplate="<b>%{x}</b><br>%{y:.1%} returned<br>"
                                   "%{customdata[0]:,.0f} of %{customdata[1]:,.0f} released<extra></extra>")
         fig.update_layout(showlegend=False, yaxis_range=[0, min(1, g["rate"].max() * 1.2)])
-        return fig
+        names = [labels(v) for v in g[x]] if labels else list(g[x])
+        return viz.describe(fig, f"Bar chart of the share of releases returning to prison within {window()} "
+                                 f"year{'s' if window() > 1 else ''}, by {what_by}: "
+                                 f"{viz.alt_values(zip(names, g['rate']), '{:.0%}')}.")
 
     @viz.render_plot
     def year_chart():
@@ -184,20 +187,23 @@ def page_server(input, output, session):
                         textposition="top center", textfont=dict(color=viz.INK_2),
                         showlegend=False, hoverinfo="skip")
         fig.update_layout(yaxis_range=[0, min(1, total.max() * 1.2)])
-        return fig
+        return viz.describe(fig, f"Stacked bar chart of the share of each release-year cohort returning to prison "
+                                 f"within {window()} year{'s' if window() > 1 else ''}, colored by the type of the "
+                                 f"first return ({', '.join(RETURN_TYPES[t] for t in by_type.columns)}). "
+                                 f"Overall rate by release year: {viz.alt_values(zip(years, total), '{:.0%}')}.")
 
     @viz.render_plot
     def race_chart():
-        return _bar(_rate_by(cohort(), "race"), "race", viz.RACE_COLOR, order=viz.RACE_ORDER)
+        return _bar(_rate_by(cohort(), "race"), "race", viz.RACE_COLOR, order=viz.RACE_ORDER, what_by="race / ethnicity")
 
     @viz.render_plot
     def age_chart():
         g = _rate_by(cohort(), "age_group")
-        return _bar(g, "age_group", viz.SERIES[0], order=viz.AGE_ORDER, labels=viz.age_label)
+        return _bar(g, "age_group", viz.SERIES[0], order=viz.AGE_ORDER, labels=viz.age_label, what_by="age at release")
 
     @viz.render_plot
     def crime_chart():
-        return _bar(_rate_by(cohort(), "crime_class"), "crime_class", viz.CRIME_COLOR, order=viz.CRIME_ORDER)
+        return _bar(_rate_by(cohort(), "crime_class"), "crime_class", viz.CRIME_COLOR, order=viz.CRIME_ORDER, what_by="offense class")
 
     @viz.render_plot
     def curve_chart():
@@ -208,16 +214,24 @@ def page_server(input, output, session):
         fig = viz.figure(320, hovermode="x unified",
                          xaxis=dict(title="Months since release", dtick=6),
                          yaxis=dict(tickformat=".0%", rangemode="tozero"))
-        for race in viz.RACE_ORDER:
+        ends = []
+        for i, race in enumerate(viz.RACE_ORDER):
             s = c.loc[c["race"] == race, "days_to_return"]
             if len(s) < 50:
                 continue
             days = s.dropna().to_numpy()
             cum = [(days <= m * 30.44).sum() / len(s) for m in months]
-            fig.add_scatter(name=race, x=months, y=cum, mode="lines",
+            # a different marker shape per line, every third month, so the lines stay apart without color
+            fig.add_scatter(name=race, x=months, y=cum, mode="lines+markers",
                             line=dict(color=viz.RACE_COLOR[race], width=2),
+                            marker=dict(symbol=viz.SYMBOLS[i % len(viz.SYMBOLS)], size=8, color=viz.RACE_COLOR[race],
+                                        line=dict(color=viz.SURFACE, width=1), maxdisplayed=window() * 4 + 1),
                             hovertemplate="%{y:.1%}")
-        return fig
+            ends.append((race, cum[-1]))
+        return viz.describe(fig, f"Line chart of the cumulative share of releases returned to prison by months "
+                                 f"since release (0 to {months[-1]}), one line per race / ethnicity with a distinct "
+                                 f"marker shape. Share returned at {months[-1]} months: "
+                                 f"{viz.alt_values(ends, '{:.0%}')}.")
 
     @render.data_frame
     def table():

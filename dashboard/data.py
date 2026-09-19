@@ -87,6 +87,13 @@ def recidivism() -> pd.DataFrame:
 
 
 @lru_cache
+def il_outline() -> tuple[list, list]:
+    """The state line around the county map (lon / lat lists), for the choropleths."""
+    from . import viz
+    return viz.outer_boundary(il_counties())
+
+
+@lru_cache
 def il_counties() -> dict:
     return json.loads((DATA_DIR / "il_counties.geojson").read_text())
 
@@ -101,5 +108,5 @@ def county_population() -> pd.DataFrame:
 def warm_cache() -> None:
     """Read every file once at startup so the first session doesn't pay for parsing."""
     for loader in (expenses, population_snapshots, rates, admissions, exits,
-                   recidivism, il_counties, county_population):
+                   recidivism, il_counties, il_outline, county_population):
         loader()

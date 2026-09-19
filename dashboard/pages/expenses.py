@@ -176,7 +176,8 @@ def page_server(input, output, session):
                                   "Spend: $%{customdata[0]:,.0f} (%{customdata[2]} months)<br>"
                                   "Avg population: %{customdata[1]:,.0f}<extra></extra>")
         fig.update_layout(showlegend=False, yaxis_range=[0, a["per_inmate"].max() * 1.18])
-        return fig
+        return viz.describe(fig, "Bar chart of IDOC expenditure per inmate by fiscal year (* = partial year): "
+                                 f"{viz.alt_values(zip(labels, a['per_inmate']), '${:,.0f}')}.")
 
     @viz.render_plot
     def annual_chart():
@@ -189,7 +190,10 @@ def page_server(input, output, session):
                 fig.add_bar(name=cat, x=[_fy(y) for y in piv.index], y=piv[cat],
                             marker=viz.bar_marker(viz.EXPENSE_COLOR[cat]),
                             hovertemplate=f"<b>{cat}</b><br>%{{x}}: $%{{y:,.0f}}<extra></extra>")
-        return fig
+        tot = piv.sum(axis=1)
+        return viz.describe(fig, f"Stacked bar chart of IDOC expenditures by category ({', '.join(piv.columns)}) "
+                                 f"per fiscal year, {_fy(piv.index[0])} to {_fy(piv.index[-1])}. Totals: "
+                                 f"{viz.alt_values(((_fy(y), v) for y, v in tot.items()), '${:,.0f}')}.")
 
     @viz.render_plot
     def monthly_chart():
@@ -206,7 +210,10 @@ def page_server(input, output, session):
                             marker=viz.bar_marker(viz.EXPENSE_COLOR[cat]),
                             hovertemplate=f"<b>{cat}</b><br>%{{x}}: $%{{y:,.0f}}<extra></extra>")
         fig.update_layout(xaxis=dict(type="category"))
-        return fig
+        tot = piv.sum(axis=1)
+        return viz.describe(fig, f"Stacked bar chart of monthly IDOC spend by category, {_fy(year())} "
+                                 f"({labels[0]} to {labels[-1]}). Monthly totals: "
+                                 f"{viz.alt_values(zip(labels, tot), '${:,.0f}')}.")
 
     @viz.render_plot
     def objects_chart():
@@ -228,7 +235,8 @@ def page_server(input, output, session):
                     customdata=top["category"],
                     hovertemplate="<b>%{y}</b><br>%{customdata}<br>$%{x:,.0f}<extra></extra>")
         fig.update_layout(showlegend=False, xaxis_range=[0, top["amount"].max() * 1.25])
-        return fig
+        return viz.describe(fig, f"Horizontal bar chart of the 12 largest IDOC line items, {_fy(year())}, colored by "
+                                 f"category: {viz.alt_values(zip(top['object'].str.title()[::-1], top['amount'][::-1]), '${:,.0f}')}.")
 
     @render.data_frame
     def table():

@@ -41,6 +41,19 @@ shiny run app.py --reload
 (`DB_PATH`) plus `idoc_public_map.xlsx`, and overwrites the CSVs. Needs `duckdb` and
 `openpyxl` in addition to `requirements.txt`. The container only needs the CSVs.
 
+## Accessibility
+
+- Every chart carries alternative text describing its contents (not an analysis): the
+  chart div has `role="img"` and an `aria-label`, followed by a visually hidden paragraph
+  with the same text. Set it with `viz.describe(fig, text)`; `viz.alt_values()` formats
+  the value lists.
+- The county map draws the state line in black and shades counties on `viz.MAP_SCALE`,
+  whose lightest stop is at least 3:1 against the page, so no county fades into the
+  white borders.
+- Stacked area charts (`viz.stacked_area`) separate bands with a surface-colored seam and
+  name each band at its right-hand end, so the stack reads without color.
+- Multi-line charts give every line a different marker shape (`viz.SYMBOLS`).
+
 ## Definitions
 
 - **Filters** - the sex / race / age / offense dropdowns are multi-select; leaving one

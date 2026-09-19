@@ -56,7 +56,8 @@ def page_ui():
             ui.card(ui.card_header(ui.output_text("map_title")), viz.output_plot("map_chart"),
                     ui.card_footer(note("Rate per 100k residents, by county of sentencing. The county "
                                         "filter outlines a county rather than hiding the others."))),
-            ui.card(ui.card_header(ui.output_text("trend_title")), viz.output_plot("trend_chart")),
+            ui.card(ui.card_header(ui.output_text("table_title")), ui.output_ui("table"),
+                    ui.card_footer(note("Click a column header to sort. The statewide row stays on top."))),
             col_widths={"sm": 12, "xl": [5, 7]},
         ),
         ui.layout_columns(
@@ -68,8 +69,7 @@ def page_ui():
         ui.layout_columns(
             ui.card(ui.card_header("Black : White disparity ratio over time"), viz.output_plot("ratio_chart"),
                     ui.card_footer(note("1.0 = parity. Uses the sex, age, county and offense filters."))),
-            ui.card(ui.card_header(ui.output_text("table_title")), ui.output_ui("table"),
-                    ui.card_footer(note("Click a column header to sort. The statewide row stays on top."))),
+            ui.card(ui.card_header(ui.output_text("trend_title")), viz.output_plot("trend_chart")),
             col_widths={"sm": 12, "xl": [4, 8]},
         ),
     )
@@ -216,13 +216,18 @@ def page_server(input, output, session):
         if g.empty:
             return viz.empty_figure(height=480)
         highlight = None if input.county() == "All counties" else input.county()
-        return viz.choropleth(
+        fig = viz.choropleth(
             data.il_counties(), g["rate"], height=480,
             customdata=g[["incarcerated", "gen_population"]].values,
             hovertemplate="<b>%{location}</b><br>%{z:,.0f} per 100k<br>"
                           "%{customdata[0]:,.0f} in custody / %{customdata[1]:,.0f} residents<extra></extra>",
-            highlight=highlight,
+            highlight=highlight, outline=data.il_outline(),
         )
+        top = g["rate"].sort_values(ascending=False).head(5)
+        return viz.describe(fig, f"Map of Illinois counties shaded by incarceration rate per 100,000 residents, "
+                                 f"{input.year()}, {OFFENSE_CHOICES[col()].lower()}: {len(g)} counties from "
+                                 f"{g['rate'].min():,.0f} to {g['rate'].max():,.0f}; highest {viz.alt_values(top.items())}."
+                                 + (f" {highlight} County is outlined." if highlight else ""))
 
     @viz.render_plot
     def trend_chart():
@@ -243,14 +248,17 @@ def page_server(input, output, session):
             return viz.empty_figure(height=480)
         fig = viz.figure(480, hovermode="x unified", yaxis=dict(tickformat=",.0f", rangemode="tozero"),
                          xaxis=dict(dtick=2))
-        for g in piv.columns:
-            fig.add_scatter(name=viz.age_label(g) if b == "age" else g, x=piv.index, y=piv[g],
-                            mode="lines", stackgroup="one", line=dict(width=0.5, color=colors[g]),
-                            fillcolor=colors[g], hovertemplate="%{y:,.0f}")
+        label = viz.age_label if b == "age" else (lambda c: c)
+        viz.stacked_area(fig, piv, colors, label)
         fig.add_vline(x=input.year(), line=dict(color=viz.AXIS, width=1))
-        return fig
+        last = piv.index[-1]
+        return viz.describe(fig, f"Stacked area chart of people in custody sentenced in {_where()} by "
+                                 f"{BREAKDOWNS[b].lower()}, yearly {piv.index[0]} to {last}. "
+                                 f"Total {piv.sum(axis=1).iloc[0]:,.0f} in {piv.index[0]} and "
+                                 f"{piv.sum(axis=1).iloc[-1]:,.0f} in {last}; in {last}: "
+                                 f"{viz.alt_values((label(c), piv.loc[last, c]) for c in piv.columns)}.")
 
-    def _bar(by, order, colors, labels=None, height=300):
+    def _bar(by, order, colors, labels=None, height=300, what_by="group"):
         g = _rate_by(selected(), by, col())
         g = g.set_index(by).reindex([o for o in order if o in g[by].values]).reset_index()
         if g.empty or not g["incarcerated"].sum():
@@ -266,26 +274,29 @@ def page_server(input, output, session):
                                   "%{customdata[0]:,.0f} in custody / %{customdata[1]:,.0f} residents"
                                   "<extra></extra>")
         fig.update_layout(showlegend=False, yaxis_range=[0, y.max() * 1.18])
-        return fig
+        names = [labels(v) for v in g[by]] if labels else list(g[by])
+        what = "incarceration rate per 100,000 residents" if rate else "people in custody"
+        return viz.describe(fig, f"Bar chart of {what} by {what_by}, {_where()}, {input.year()}: "
+                                 f"{viz.alt_values(zip(names, y))}.")
 
     @viz.render_plot
     def sex_chart():
-        return _bar("sex", viz.SEX_ORDER, viz.SEX_COLOR)
+        return _bar("sex", viz.SEX_ORDER, viz.SEX_COLOR, what_by="sex")
 
     @viz.render_plot
     def race_chart():
-        return _bar("race", viz.RACE_ORDER, viz.RACE_COLOR)
+        return _bar("race", viz.RACE_ORDER, viz.RACE_COLOR, what_by="race / ethnicity")
 
     @viz.render_plot
     def age_chart():
-        return _bar("age", viz.AGE_ORDER, viz.AGE_COLOR, labels=viz.age_label)
+        return _bar("age", viz.AGE_ORDER, viz.AGE_COLOR, labels=viz.age_label, what_by="age group")
 
     @viz.render_plot
     def ratio_chart():
         piv = bw_by_year()
         if "ratio" not in piv or piv["ratio"].isna().all():
             return viz.empty_figure()
-        fig = viz.figure(360, yaxis=dict(rangemode="tozero", ticksuffix="×"), xaxis=dict(dtick=2))
+        fig = viz.figure(480, yaxis=dict(rangemode="tozero", ticksuffix="×"), xaxis=dict(dtick=2))
         fig.add_scatter(x=piv.index, y=piv["ratio"], mode="lines+markers",
                         line=dict(color=viz.SERIES[0], width=2),
                         marker=dict(size=8, color=viz.SERIES[0], line=dict(color=viz.SURFACE, width=2)),
@@ -294,41 +305,24 @@ def page_server(input, output, session):
                       annotation_position="bottom right", annotation_font=dict(color=viz.MUTED))
         fig.add_vline(x=input.year(), line=dict(color=viz.AXIS, width=1))
         fig.update_layout(showlegend=False)
-        return fig
+        r = piv["ratio"].dropna()
+        return viz.describe(fig, f"Line chart of the Black to White incarceration-rate ratio in {_where()}, "
+                                 f"yearly {r.index[0]} to {r.index[-1]}: {viz.alt_values(r.items(), '{:.1f}x')}. "
+                                 "A horizontal line marks parity at 1.0.")
 
     @render.ui
     def table():
         c = col()
-        # Residents / in custody / rate honor every filter; the Black and White rates ignore
-        # the race filter so the ratio is always computable.
-        d = data.rates()
-        bw_src = d.loc[(d["year"] == input.year()) & isin_or_all(d["sex"], input.sex())
-                       & isin_or_all(d["age"], input.age()) & d["race"].isin(["Black", "White"])]
-
-        def _rows(df, bw, label=None):
-            by = ["county"] if label is None else []
-            g = df.groupby(by)[[c, "gen_population"]].sum() if by \
-                else pd.DataFrame({c: [df[c].sum()], "gen_population": [df["gen_population"].sum()]}, index=[label])
-            g = g.rename(columns={c: "incarcerated"})
-            g["rate"] = g["incarcerated"] / g["gen_population"] * PER
-            r = bw.groupby(by + ["race"])[[c, "gen_population"]].sum()
-            r = (r[c] / r["gen_population"] * PER).unstack("race") if by \
-                else (r[c] / r["gen_population"] * PER).rename(label).to_frame().T
-            return g.join(r, how="left")
-
-        state = _rows(year_all(), bw_src, label="All Illinois")
-        counties = _rows(year_all(), bw_src)
-        counties = counties.loc[counties["gen_population"] > 0].sort_values("rate", ascending=False)
-        out = pd.concat([state, counties])
-        for race in ("Black", "White"):
-            if race not in out.columns:
-                out[race] = float("nan")
-        out["ratio"] = out["Black"] / out["White"]
+        d = year_all()
+        state = pd.DataFrame({c: [d[c].sum()], "gen_population": [d["gen_population"].sum()]}, index=["All Illinois"])
+        counties = d.groupby("county")[[c, "gen_population"]].sum()
+        counties = counties.loc[counties["gen_population"] > 0]
+        out = pd.concat([state, counties]).rename(columns={c: "incarcerated"})
+        out["rate"] = out["incarcerated"] / out["gen_population"] * PER
+        out = pd.concat([out.iloc[:1], out.iloc[1:].sort_values("rate", ascending=False)])
 
         cols = {"County": (None, None), "Residents": ("gen_population", "{:,.0f}"),
-                "In custody": ("incarcerated", "{:,.0f}"), "Rate per 100k": ("rate", "{:,.0f}"),
-                "Black rate": ("Black", "{:,.0f}"), "White rate": ("White", "{:,.0f}"),
-                "Black : White": ("ratio", "{:.1f}×")}
+                "In custody": ("incarcerated", "{:,.0f}"), "Rate per 100k": ("rate", "{:,.0f}")}
         raw = pd.DataFrame({"County": out.index.astype(str)})
         shown = raw.copy()
         for name, (src, fmt) in cols.items():
