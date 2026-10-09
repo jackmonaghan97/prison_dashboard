@@ -36,10 +36,19 @@ BLUE_TINT = "#ebf6ff"
 SERIES = [BLUE, "#e36209", "#22863a", "#e8a600",
           "#6f42c1", "#d73a49", STEEL, "#8a6d3b"]
 SEQ_BLUE = [BLUE_TINT, "#bcd8f5", "#8fbbea", "#5f9bdc", BLUE, NAVY_2, NAVY]
-# choropleth fills: every stop is at least 3:1 against the page (WCAG 1.4.11), so the
-# lightest counties still stand out from the white county borders and the page
-MAP_SCALE = ["#4f95dd", "#2a7bd0", BLUE, "#0c4a8f", NAVY, "#041d33"]
+# choropleth fills: white (low) to dark navy (high), one blue hue. The map sits on a grey
+# background (MAP_BG) inside a black state line, so the white end never meets the white
+# page. Low (light) counties are told apart by dark county borders and high (dark) ones by
+# light borders - map_border() picks whichever is at least 3:1 against each fill (WCAG 1.4.11)
+MAP_SCALE = ["#ffffff", "#c6dbf3", "#88b2e4", "#4a86cf", "#1d5fae", "#0d3767", "#061f3d"]
+MAP_BG = "#d6d5cf"
 MAP_OUTLINE = INK
+# the selected county: a yellow line over a wider black one. Against every stop of
+# MAP_SCALE one of the two is at least 3:1 - black on the five lightest stops (19.7, 13.9,
+# 8.9, 5.3, 3.1:1), yellow on the three darkest (4.5, 8.5, 11.7:1) - and yellow on black is 14:1
+MAP_HIGHLIGHT = "#ffd60a"
+# plotly's geo maps load a base-map topojson; it is served from here instead of cdn.plot.ly
+TOPOJSON_DIR = Path(__file__).resolve().parent.parent / "data" / "topojson"
 # marker shapes cycle with the series colors so lines stay apart without color
 SYMBOLS = ["circle", "square", "diamond", "triangle-up", "cross", "x", "star", "hexagon"]
 DIVERGING = [[0.0, BLUE], [0.5, "#f0efec"], [1.0, "#d73a49"]]
@@ -60,6 +69,24 @@ def rgba(hex_color: str, alpha: float) -> str:
     """'#rrggbb' -> 'rgba(r,g,b,a)' so a tint also shows in the legend swatch."""
     r, g, b = (int(hex_color[i:i + 2], 16) for i in (1, 3, 5))
     return f"rgba({r},{g},{b},{alpha})"
+
+
+def luminance(hex_color: str) -> float:
+    """WCAG relative luminance of '#rrggbb'."""
+    c = [int(hex_color[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+    c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+
+
+def contrast(a: str, b: str) -> float:
+    """WCAG contrast ratio of two '#rrggbb' colors."""
+    hi, lo = sorted((luminance(a), luminance(b)), reverse=True)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def map_border(fill: str) -> str:
+    """County border for a MAP_SCALE fill: dark grey on light fills, white on dark ones."""
+    return max((INK_2, SURFACE), key=lambda c: contrast(c, fill))
 
 
 def _ramp(colors: list[str], n: int) -> list[str]:
@@ -178,24 +205,29 @@ def choropleth(geojson: dict, values, *, height: int = 480, tickformat: str = ",
     (lon / lat lists from outer_boundary) is drawn as a black state line.
     """
     n = len(MAP_SCALE) - 1
+    lo, hi = values.min(), values.max()
+    # each county's border follows its fill's place on the ramp (see map_border)
+    pos = ((values - lo) / (hi - lo) * n).round().astype(int) if hi > lo else pd.Series(0, index=values.index)
     fig = go.Figure(go.Choropleth(
         geojson=geojson, featureidkey="properties.name",
-        locations=values.index, z=values.values,
+        locations=values.index, z=values.values, zmin=lo, zmax=hi,
         colorscale=[[i / n, c] for i, c in enumerate(MAP_SCALE)],
-        marker=dict(line=dict(color=SURFACE, width=0.8)),
-        colorbar=dict(thickness=10, len=0.6, outlinewidth=0, tickfont=dict(color=MUTED),
-                      tickformat=tickformat),
+        marker=dict(line=dict(color=[map_border(MAP_SCALE[i]) for i in pos], width=0.8)),
+        colorbar=dict(thickness=10, len=0.6, outlinewidth=1, outlinecolor=INK_2,
+                      tickfont=dict(color=INK_2), tickformat=tickformat),
         customdata=customdata, hovertemplate=hovertemplate,
     ))
     if outline is not None:
         fig.add_scattergeo(lon=outline[0], lat=outline[1], mode="lines", line=dict(color=MAP_OUTLINE, width=1.5),
                            hoverinfo="skip", showlegend=False)
     if highlight and highlight in values.index:
-        fig.add_choropleth(geojson=geojson, featureidkey="properties.name", locations=[highlight],
-                           z=[0], showscale=False, colorscale=[[0, "rgba(0,0,0,0)"], [1, "rgba(0,0,0,0)"]],
-                           marker=dict(line=dict(color=INK, width=2.5)), hoverinfo="skip")
-    fig.update_layout(**base_layout(height, margin=dict(l=0, r=0, t=0, b=0)))
-    fig.update_geos(fitbounds="locations", visible=False, bgcolor=SURFACE, projection_type="mercator")
+        for color, width in ((INK, 6), (MAP_HIGHLIGHT, 3.5)):
+            fig.add_choropleth(geojson=geojson, featureidkey="properties.name", locations=[highlight],
+                               z=[0], showscale=False, colorscale=[[0, "rgba(0,0,0,0)"], [1, "rgba(0,0,0,0)"]],
+                               marker=dict(line=dict(color=color, width=width)), hoverinfo="skip")
+    fig.update_layout(**base_layout(height, margin=dict(l=0, r=0, t=0, b=0),
+                                    paper_bgcolor=MAP_BG, plot_bgcolor=MAP_BG))
+    fig.update_geos(fitbounds="locations", visible=False, bgcolor=MAP_BG, projection_type="mercator")
     return fig
 
 
@@ -241,7 +273,9 @@ def empty_figure(message: str = "No data for this selection", height: int = 360)
 
 
 # ---------------------------------------------------------------- rendering
-PLOT_CONFIG = '{"responsive": true, "displayModeBar": false, "scrollZoom": false}'
+# topojsonURL: the county map's base-map file comes from the app (TOPOJSON_DIR, served at
+# /topojson), not cdn.plot.ly - without it the map draws nothing wherever the CDN is unreachable
+PLOT_CONFIG = '{"responsive": true, "displayModeBar": false, "scrollZoom": false, "topojsonURL": "/topojson/"}'
 
 
 def plot_html(fig: go.Figure) -> ui.HTML:
@@ -275,6 +309,49 @@ def render_plot(fn):
     return _wrapped
 
 
+def download_csv(filename):
+    """
+    Decorator: the function returns the DataFrame behind a chart or table; it becomes a
+    CSV download (output id = the function's name, paired with common.download_button).
+    `filename` is a string or a function returning one, e.g. to include the selected year.
+    Written as UTF-8 with a byte-order mark so Excel reads the dashes and symbols.
+    """
+    def deco(fn):
+        @render.download(filename=filename, media_type="text/csv", encoding="utf-8-sig")
+        @functools.wraps(fn)
+        def _wrapped():
+            yield fn().to_csv(index=False)
+        return _wrapped
+    return deco
+
+
+def layer_table(piv: pd.DataFrame, fmt: str | dict = "{:,.0f}", index_name: str = "Period",
+                labels=None, summary: str = "Show the chart's values as a table", total: bool = True) -> ui.Tag:
+    """
+    A chart's values as a table (rows = x positions or groups, one column per layer or
+    measure, plus a total when `total`), inside a collapsed <details> under the chart, so
+    every value can be read even where the bars are too thin to see or hover. `fmt` is one
+    format for every column or a dict of column -> format.
+    """
+    labels = labels or (lambda c: c)
+    cols = list(piv.columns)
+    f = fmt if isinstance(fmt, dict) else dict.fromkeys(cols, fmt)
+    cell = lambda v, spec: "–" if pd.isna(v) else spec.format(v)
+    head = ui.tags.tr(ui.tags.th(index_name, scope="col"),
+                      *[ui.tags.th(labels(c), scope="col") for c in cols],
+                      ui.tags.th("Total", scope="col") if total else None)
+    rows = [ui.tags.tr(ui.tags.th(str(idx), scope="row"),
+                       *[ui.tags.td(cell(row[c], f[c])) for c in cols],
+                       ui.tags.td(cell(row.sum(), fmt if isinstance(fmt, str) else "{:,.0f}")) if total else None)
+            for idx, row in piv.iterrows()]
+    return ui.tags.details(
+        ui.tags.summary(summary),
+        ui.div(ui.tags.table(ui.tags.thead(head), ui.tags.tbody(*rows),
+                             class_="layer-table" if total else "layer-table no-total"),
+               class_="layer-wrap"),
+        class_="layer-details")
+
+
 def sortable_table(display: pd.DataFrame, sort_values: pd.DataFrame | None = None,
                    pinned_rows: int = 0, height: str = "400px") -> ui.Tag:
     """
@@ -294,28 +371,6 @@ def sortable_table(display: pd.DataFrame, sort_values: pd.DataFrame | None = Non
         rows.append(ui.tags.tr(*cells, class_="pinned" if i < pinned_rows else None))
     return ui.div(ui.tags.table(ui.tags.thead(head), ui.tags.tbody(*rows), class_="sortable-table"),
                   class_="sortable-wrap", style=f"max-height:{height}")
-
-
-SORTABLE_JS = """
-document.addEventListener("click", function (e) {
-  const th = e.target.closest(".sortable-table th");
-  if (!th) return;
-  const table = th.closest("table"), tbody = table.querySelector("tbody");
-  const idx = Array.from(th.parentNode.children).indexOf(th);
-  const asc = th.dataset.dir !== "asc";
-  table.querySelectorAll("th").forEach(h => { h.dataset.dir = ""; h.classList.remove("asc", "desc"); });
-  th.dataset.dir = asc ? "asc" : "desc"; th.classList.add(asc ? "asc" : "desc");
-  const rows = Array.from(tbody.rows), pinned = rows.filter(r => r.classList.contains("pinned"));
-  const key = r => { const c = r.cells[idx]; return "v" in c.dataset ? (c.dataset.v === "" ? null : +c.dataset.v) : c.textContent; };
-  const sorted = rows.filter(r => !pinned.includes(r)).sort((a, b) => {
-    const x = key(a), y = key(b);
-    if (x === null) return 1; if (y === null) return -1;
-    const d = typeof x === "number" ? x - y : String(x).localeCompare(String(y));
-    return asc ? d : -d;
-  });
-  pinned.concat(sorted).forEach(r => tbody.appendChild(r));
-});
-"""
 
 
 # ---------------------------------------------------------------- formatting

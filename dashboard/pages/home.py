@@ -7,7 +7,7 @@ TILES = [
      "How many people are in IDOC custody, where they were sentenced, and how incarceration "
      "rates differ by race, sex, age and county.",
      ["People in custody & rate per 100k", "County map", "Population trend by race / sex / age / offense",
-      "Rates by sex, race and age", "Black : White disparity over time", "County table"],
+      "Rates by sex, race and age", "Black and Hispanic : White disparity over time", "County table"],
      "IDOC year-end population data sets · U.S. Census ACS (denominators)"),
     ("flows", "Admissions & exits",
      "How many people enter and leave prison each period, why they are admitted, and how "
@@ -22,9 +22,9 @@ TILES = [
      "IDOC exits linked to later admissions (releases from 2018)"),
     ("expenses", "Expenses",
      "What IDOC spends each fiscal year, where the money goes, and the cost per inmate.",
-     ["Expense per inmate by fiscal year", "Spend by category", "Monthly spend & top line items",
-      "Category × month table"],
-     "Illinois Comptroller expenditures by object code · IDOC headcounts"),
+     ["Expense per inmate by fiscal year", "Spend by category (selected year)",
+      "Average monthly spend & top line items", "Category × month table"],
+     "Illinois Comptroller expenditures by object code · IDOC June 30 headcounts"),
 ]
 
 

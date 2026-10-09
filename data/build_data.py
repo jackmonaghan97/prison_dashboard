@@ -5,7 +5,7 @@ Run from anywhere:  python data/build_data.py
 
 Steps
   1. runs retrieve_data.py (unchanged) -> inc_data.csv           (rates & disparities)
-  2. population_snapshots.csv   quarterly/semiannual headcounts    (expense per inmate)
+  2. population_snapshots.csv   IDOC headcount on June 30 each year (expense per inmate)
   3. admissions.csv             monthly admissions, aggregated     (admissions & exits)
   4. exits.csv                  monthly exits, aggregated          (admissions & exits)
   5. recidivism.csv             one row per release event, de-identified
@@ -91,6 +91,7 @@ def build_population(con):
         SELECT record_dt, COUNT(DISTINCT docnbr) AS population
         FROM prison_population_data_sets
         WHERE record_dt IS NOT NULL
+          AND EXTRACT(month FROM record_dt) = 6        -- June 30: end of the state fiscal year
         GROUP BY 1 ORDER BY 1
     """).fetchdf()
     pop.to_csv(DATA_DIR / "population_snapshots.csv", index=False)

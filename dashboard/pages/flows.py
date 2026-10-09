@@ -3,9 +3,11 @@ import pandas as pd
 from shiny import module, reactive, render, ui
 
 from .. import data, viz
-from ..common import apply_demo, crime_filter, demo_filters, note, reset_button, reset_demo
+from ..common import apply_demo, crime_filter, demo_filters, download_footer, note, reset_button, reset_demo
 
 GRAIN = {"M": "Month", "Q": "Quarter", "Y": "Year"}
+# the COVID quarter: IDOC's population dropped by a quarter in April-June 2020
+COVID_Q = (pd.Timestamp("2020-04-01"), pd.Timestamp("2020-06-30"))
 MSR = "Mandatory supervised release (MSR)"
 EXPIRATION = "Expiration of Sentence"
 
@@ -46,22 +48,26 @@ def page_ui():
         ui.layout_column_wrap(
             ui.value_box("Admissions", ui.output_text("kpi_adm"), ui.output_text("kpi_range"), theme="primary"),
             ui.value_box("Exits", ui.output_text("kpi_ex"), ui.output_text("kpi_range2")),
-            ui.value_box("Net change", ui.output_text("kpi_net"), "admissions − exits"),
+            ui.value_box("Net change", ui.output_text("kpi_net"), ui.output_text("kpi_net_sub")),
             fill=False,
         ),
         ui.card(ui.card_header("Admissions, exits and net change"), viz.output_plot("flow_chart"),
                 ui.card_footer(note("Exits are drawn below zero; the line is net change "
-                                    "(admissions − exits)."))),
+                                    "(admissions − exits). Yearly values are in the table view below."))),
         ui.layout_columns(
-            ui.card(ui.card_header("Admissions by type"), viz.output_plot("type_chart")),
+            ui.card(ui.card_header("Admissions by type"), viz.output_plot("type_chart"),
+                    ui.output_ui("type_table"),
+                    download_footer("type_csv", "the admissions by type table")),
             ui.card(ui.card_header("Exits by reason"), viz.output_plot("reason_chart"),
-                    ui.card_footer(note("MSR = mandatory supervised release (parole)."))),
+                    download_footer("reason_csv", "the exits by reason chart",
+                                    note("MSR = mandatory supervised release (parole)."))),
             col_widths={"sm": 12, "xl": [7, 5]},
         ),
         ui.card(ui.card_header("Table view - by year"), ui.output_data_frame("table"),
-                ui.card_footer(note("Admission shares are % of that year's admissions; exit shares are "
-                                    "% of that year's exits. Other exits = anything that is not MSR or "
-                                    "expiration of sentence (deaths, reversals, court orders, ...)."))),
+                download_footer("table_csv", "the yearly table",
+                                note("Admission shares are % of that year's admissions; exit shares are "
+                                     "% of that year's exits. Other exits = anything that is not MSR or "
+                                     "expiration of sentence (deaths, reversals, court orders, ...)."))),
     )
 
 
@@ -119,6 +125,18 @@ def page_server(input, output, session):
         net = adm()["n"].sum() - ex()["n"].sum()
         return f"{'+' if net > 0 else ''}{net:,.0f}"
 
+    @render.text
+    def kpi_net_sub():
+        """How much of the net change happened in the COVID quarter (Q2 2020), when it is in range."""
+        a, e = adm(), ex()
+        net = a["n"].sum() - e["n"].sum()
+        covid = (a.loc[a["month"].between(*COVID_Q), "n"].sum()
+                 - e.loc[e["month"].between(*COVID_Q), "n"].sum())
+        lo, hi = input.years()
+        if not (lo <= 2020 <= hi) or not net:
+            return "admissions − exits"
+        return f"admissions − exits · {covid / net:.0%} of it ({covid:+,.0f}) in Q2 2020, the COVID quarter"
+
     @reactive.calc
     def year_label() -> str:
         a, b = input.years()
@@ -160,14 +178,38 @@ def page_server(input, output, session):
                                  f"exits, net {f['Net change'].sum():+,.0f}; latest period {labels[-1]}: "
                                  f"{f['Admissions'].iloc[-1]:,.0f} admissions, {f['Exits'].iloc[-1]:,.0f} exits.")
 
-    @viz.render_plot
-    def type_chart():
+    @reactive.calc
+    def type_piv() -> pd.DataFrame:
+        """Period x admission type, columns in ADMTYP_ORDER, index labelled for the grain."""
         g = input.grain()
         a = adm().assign(period=lambda d: _period(d["month"], g))
         piv = a.pivot_table(index="period", columns="admtyp", values="n", aggfunc="sum").fillna(0)
+        piv = piv[[t for t in viz.ADMTYP_ORDER if t in piv.columns]]
+        piv.index = _labels(piv.index, g)
+        return piv
+
+    @render.ui
+    def type_table():
+        piv = type_piv()
+        return None if piv.empty else viz.layer_table(piv, index_name=GRAIN[input.grain()])
+
+    def _file(what: str) -> str:
+        county = "Illinois" if input.county() == "All counties" else input.county()
+        return f"{what}_{county}_{year_label()}.csv".replace(" ", "_").replace("–", "-")
+
+    @viz.download_csv(lambda: _file(f"admissions_by_type_per_{GRAIN[input.grain()].lower()}"))
+    def type_csv():
+        out = type_piv().copy()
+        out["Total"] = out.sum(axis=1)
+        return out.rename_axis(GRAIN[input.grain()]).reset_index()
+
+    @viz.render_plot
+    def type_chart():
+        g = input.grain()
+        piv = type_piv()
         if piv.empty:
             return viz.empty_figure(height=400)
-        labels = _labels(piv.index, g)
+        labels = list(piv.index)
         fig = viz.figure(400, barmode="stack", yaxis=dict(tickformat=",.0f"))
         for t in viz.ADMTYP_ORDER:
             if t in piv.columns:
@@ -179,9 +221,18 @@ def page_server(input, output, session):
                                  f"{labels[0]} to {labels[-1]}. Totals over the period: "
                                  f"{viz.alt_values((t, tot[t]) for t in viz.ADMTYP_ORDER if t in tot)}.")
 
+    @reactive.calc
+    def reasons() -> pd.Series:
+        return ex().groupby("exit_reason")["n"].sum().sort_values(ascending=False)
+
+    @viz.download_csv(lambda: _file("exits_by_reason"))
+    def reason_csv():
+        g = reasons()
+        return pd.DataFrame({"Exit reason": g.index, "Years": year_label(), "Exits": g.values})
+
     @viz.render_plot
     def reason_chart():
-        g = ex().groupby("exit_reason")["n"].sum().sort_values(ascending=False)
+        g = reasons()
         if g.empty:
             return viz.empty_figure(height=400)
         if len(g) > 8:
@@ -198,8 +249,9 @@ def page_server(input, output, session):
         return viz.describe(fig, f"Horizontal bar chart of prison exits by reason, {year_label()}: "
                                  f"{viz.alt_values(g.iloc[::-1].items())}.")
 
-    @render.data_frame
-    def table():
+    @reactive.calc
+    def yearly() -> pd.DataFrame:
+        """Admissions and exits per calendar year with each type's / reason group's share (0-1)."""
         a = adm().assign(year=lambda d: d["month"].dt.year)
         e = ex().assign(year=lambda d: d["month"].dt.year)
         adm_tot = a.groupby("year")["n"].sum()
@@ -213,19 +265,34 @@ def page_server(input, output, session):
         adm_tot, ex_tot = adm_tot.reindex(years).fillna(0), ex_tot.reindex(years).fillna(0)
 
         def share(piv, colname, total):
-            s = piv[colname].reindex(years).fillna(0) / total if colname in piv.columns \
-                else pd.Series(0.0, index=years)
-            return s.map(lambda v: "–" if pd.isna(v) else f"{v:.1%}").values
+            s = piv[colname].reindex(years).fillna(0) if colname in piv.columns else pd.Series(0.0, index=years)
+            return (s / total).values
 
-        out = pd.DataFrame({
-            "Year": [str(y) for y in years],
-            "Admissions": adm_tot.map("{:,.0f}".format).values,
+        return pd.DataFrame({
+            "Year": years,
+            "Admissions": adm_tot.values,
             "Adm – Technical %": share(adm_typ, "Technical violator", adm_tot),
             "Adm – New sentence %": share(adm_typ, "New sentence violator", adm_tot),
             "Adm – Court %": share(adm_typ, "Court admission", adm_tot),
-            "Exits": ex_tot.map("{:,.0f}".format).values,
+            "Exits": ex_tot.values,
             "Exit – MSR %": share(ex_typ, MSR, ex_tot),
             "Exit – Exp. sentence %": share(ex_typ, EXPIRATION, ex_tot),
             "Exit – Other %": share(ex_typ, "Other", ex_tot),
         })
+
+    @viz.download_csv(lambda: _file("admissions_and_exits_by_year"))
+    def table_csv():
+        out = yearly().copy()
+        pct = [c for c in out.columns if c.endswith("%")]
+        out[pct] = (out[pct] * 100).round(2)                  # percent, as in the table
+        return out
+
+    @render.data_frame
+    def table():
+        out = yearly().copy()
+        out["Year"] = out["Year"].astype(str)
+        for c in ("Admissions", "Exits"):
+            out[c] = out[c].map("{:,.0f}".format)
+        for c in [c for c in out.columns if c.endswith("%")]:
+            out[c] = out[c].map(lambda v: "–" if pd.isna(v) else f"{v:.1%}")
         return render.DataGrid(out, width="100%")

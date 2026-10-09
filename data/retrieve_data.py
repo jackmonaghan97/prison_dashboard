@@ -13,7 +13,9 @@ db_path = r"C:\Users\jackm\OneDrive\Documents\duckdb_cli-windows-amd64\my_databa
 con = duckdb.connect(db_path)
 
 census_data = con.execute("SELECT * FROM illinois_demo").fetchdf()
-prison_data = con.execute("SELECT * FROM prison_population_data_sets WHERE EXTRACT(MONTH FROM record_dt) = 12").fetchdf()
+# June 30 = end of the state fiscal year, the population date IDOC reports on
+SNAPSHOT_MONTH = 6
+prison_data = con.execute(f"SELECT * FROM prison_population_data_sets WHERE EXTRACT(MONTH FROM record_dt) = {SNAPSHOT_MONTH}").fetchdf()
 
 con.close()
 
@@ -60,10 +62,7 @@ census_merge = census_merge.loc[~where]
 
 # PRISON CLEAN UP ----------------------------------------------
 
-# grab top months only
-current_month = prison_data['record_dt'].sort_values(ascending = False)[0].month
-where = prison_data['record_dt'].dt.month == current_month
-prison_data = prison_data.loc[where]
+# one snapshot per year (the query already keeps only SNAPSHOT_MONTH)
 prison_data['stnccty'] = prison_data['stnccty'].str.lower() 
 
 invalid_conditions = [
@@ -138,7 +137,8 @@ census_merge['key'] = (census_merge['county_name']
 census_merge['race'] = census_merge['race'].str.replace('_OR_AFRICAN_AMERICAN', '')
 census_merge['race'] = census_merge['race'].str.replace('_OR_LATINO', '')
 grouped['key'] = grouped['stnccty'].str.lower()
-grouped['year_c'] = grouped['year'].clip(lower=2009, upper=2023)
+# prison years outside the ACS range use the nearest ACS year
+grouped['year_c'] = grouped['year'].clip(lower=census_merge['year'].min(), upper=census_merge['year'].max())
 
 result = census_merge.merge(grouped,
     left_on= ['age', 'sex', 'race', 'key', 'year'],

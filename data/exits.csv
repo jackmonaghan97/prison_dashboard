@@ -45200,7 +45200,6 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2015-12-01,Expiration of Sentence,Expiration of Sentence,Male,White,25-29,Cook,Drug,Stateville CC,2
 2015-12-01,Expiration of Sentence,Expiration of Sentence,Male,White,25-29,Cook,Property,Vandalia CC,1
 2015-12-01,Expiration of Sentence,Expiration of Sentence,Male,White,25-29,Cook,Public Order,Stateville CC,1
-2015-12-01,Expiration of Sentence,Expiration of Sentence,Male,White,25-29,Edgar,Property,Stateville CC,1
 2015-12-01,Expiration of Sentence,Expiration of Sentence,Male,White,25-29,Grundy,Person,Western Illinois CC,1
 2015-12-01,Expiration of Sentence,Expiration of Sentence,Male,White,25-29,Henry,Person,Dixon CC,1
 2015-12-01,Expiration of Sentence,Expiration of Sentence,Male,White,25-29,Kendall,Public Order,Shawnee CC,1
@@ -46508,6 +46507,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2015-12-01,MSR: Standard release,Not Discharged,Male,White,25-29,Douglas,Property,Western Illinois CC,1
 2015-12-01,MSR: Standard release,Not Discharged,Male,White,25-29,DuPage,Person,Dixon CC,1
 2015-12-01,MSR: Standard release,Not Discharged,Male,White,25-29,DuPage,Person,Sheridan CC,1
+2015-12-01,MSR: Standard release,Not Discharged,Male,White,25-29,Edgar,Property,Taylorville CC,1
 2015-12-01,MSR: Standard release,Not Discharged,Male,White,25-29,Fayette,Drug,Illinois River CC,1
 2015-12-01,MSR: Standard release,Not Discharged,Male,White,25-29,Fayette,Property,Menard CC,1
 2015-12-01,MSR: Standard release,Not Discharged,Male,White,25-29,Franklin,Property,Menard CC,1
@@ -46901,6 +46901,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2016-01-01,Expiration of Sentence,Expiration of Sentence,Male,Black,20-24,Will,Drug,Stateville,1
 2016-01-01,Expiration of Sentence,Expiration of Sentence,Male,Black,20-24,Will,Person,Dixon,1
 2016-01-01,Expiration of Sentence,Expiration of Sentence,Male,Black,20-24,Will,Person,Shawnee,1
+2016-01-01,Expiration of Sentence,Expiration of Sentence,Male,Black,20-24,Will,Public Order,Stateville,1
 2016-01-01,Expiration of Sentence,Expiration of Sentence,Male,Black,20-24,Winnebago,Drug,Stateville,1
 2016-01-01,Expiration of Sentence,Expiration of Sentence,Male,Black,20-24,Winnebago,Person,Stateville,1
 2016-01-01,Expiration of Sentence,Expiration of Sentence,Male,Black,20-24,Winnebago,Public Order,Dixon,1
@@ -47228,7 +47229,6 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2016-01-01,MSR: Johnson Decision,Not Discharged,Male,Black,20-24,Cook,Public Order,Vandalia,1
 2016-01-01,MSR: Johnson Decision,Not Discharged,Male,Black,20-24,Lake,Person,Centralia,1
 2016-01-01,MSR: Johnson Decision,Not Discharged,Male,Black,20-24,Lake,Person,Vandalia,1
-2016-01-01,MSR: Johnson Decision,Not Discharged,Male,Black,20-24,Will,Public Order,Stateville,1
 2016-01-01,MSR: Johnson Decision,Not Discharged,Male,Black,20-24,Winnebago,Property,Dixon,1
 2016-01-01,MSR: Johnson Decision,Not Discharged,Male,Black,20-24,Winnebago,Property,Shawnee,1
 2016-01-01,MSR: Johnson Decision,Not Discharged,Male,Black,25-29,Cook,Drug,Centralia,1
@@ -124572,7 +124572,6 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2019-10-01,MSR: Court Ordered Release,Not Discharged,Male,Black,25-29,Cook,Public Order,Jacksonville,1
 2019-10-01,MSR: Court Ordered Release,Not Discharged,Male,Black,25-29,Rock Island,Person,Hill,1
 2019-10-01,MSR: Court Ordered Release,Not Discharged,Male,White,25-29,Jersey,Public Order,Danville,1
-2019-10-01,MSR: Governor Clemency,Not Discharged,Male,Black,30-34,Cook,Person,Pontiac,1
 2019-10-01,MSR: IIP Graduate,Not Discharged,Male,Black,18-19,Cook,Property,Pinckneyville,1
 2019-10-01,MSR: IIP Graduate,Not Discharged,Male,Black,20-24,Cook,Drug,Pinckneyville,1
 2019-10-01,MSR: IIP Graduate,Not Discharged,Male,Black,20-24,Cook,Public Order,Dixon,1
@@ -125133,6 +125132,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2019-10-01,MSR: Standard release,Not Discharged,Male,Black,30-34,Cook,Person,Lawrence,2
 2019-10-01,MSR: Standard release,Not Discharged,Male,Black,30-34,Cook,Person,Lincoln,3
 2019-10-01,MSR: Standard release,Not Discharged,Male,Black,30-34,Cook,Person,Pinckneyville,2
+2019-10-01,MSR: Standard release,Not Discharged,Male,Black,30-34,Cook,Person,Pontiac,1
 2019-10-01,MSR: Standard release,Not Discharged,Male,Black,30-34,Cook,Person,Robinson,2
 2019-10-01,MSR: Standard release,Not Discharged,Male,Black,30-34,Cook,Person,Sheridan,1
 2019-10-01,MSR: Standard release,Not Discharged,Male,Black,30-34,Cook,Person,Stateville,6
@@ -139721,7 +139721,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2020-07-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Champaign,Public Order,Kewanee Reentry Center,1
 2020-07-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Cook,Drug,Crossroads Male ATC,1
 2020-07-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Cook,Drug,Illinois River,1
-2020-07-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Cook,Drug,North Lawndale ATC,1
+2020-07-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Cook,Drug,Lawndale ATC,1
 2020-07-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Cook,Drug,Other,1
 2020-07-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Cook,Drug,Pinckneyville,3
 2020-07-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Cook,Drug,Shawnee,1
@@ -139990,7 +139990,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2020-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Cook,Public Order,Vandalia,1
 2020-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Cook,Public Order,Vienna,1
 2020-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,DuPage,Drug,Jacksonville,1
-2020-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Henry,Drug,Lawndale ATC,1
+2020-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Henry,Drug,North Lawndale ATC,1
 2020-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Kane,Drug,Stateville,1
 2020-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Kane,Person,East Moline,1
 2020-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Kane,Public Order,Kewanee Reentry Center,1
@@ -141133,8 +141133,8 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2020-08-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Cook,Property,Western Illinois,1
 2020-08-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Cook,Public Order,Illinois River,1
 2020-08-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Cook,Public Order,Jacksonville,1
-2020-08-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Cook,Public Order,Lawndale ATC,1
 2020-08-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Cook,Public Order,Lincoln,1
+2020-08-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Cook,Public Order,North Lawndale ATC,1
 2020-08-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Cook,Public Order,Pinckneyville,2
 2020-08-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Cook,Public Order,Robinson,2
 2020-08-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Cook,Public Order,Vandalia,1
@@ -142818,7 +142818,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2020-09-01,MSR: Standard release,Not Discharged,Male,White,45-54,DeKalb,Person,Graham,1
 2020-09-01,MSR: Standard release,Not Discharged,Male,White,45-54,DuPage,Drug,Jacksonville,1
 2020-09-01,MSR: Standard release,Not Discharged,Male,White,45-54,DuPage,Person,Big Muddy River,1
-2020-09-01,MSR: Standard release,Not Discharged,Male,White,45-54,DuPage,Property,North Lawndale ATC,1
+2020-09-01,MSR: Standard release,Not Discharged,Male,White,45-54,DuPage,Property,Lawndale ATC,1
 2020-09-01,MSR: Standard release,Not Discharged,Male,White,45-54,Edgar,Person,Robinson,1
 2020-09-01,MSR: Standard release,Not Discharged,Male,White,45-54,Ford,Drug,Vandalia,1
 2020-09-01,MSR: Standard release,Not Discharged,Male,White,45-54,Jefferson,Drug,Vandalia,2
@@ -143921,7 +143921,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2020-10-01,MSR: Standard release,Not Discharged,Male,Hispanic,45-54,McLean,Person,Big Muddy River,1
 2020-10-01,MSR: Standard release,Not Discharged,Male,Hispanic,45-54,Rock Island,Person,Illinois River,1
 2020-10-01,MSR: Standard release,Not Discharged,Male,Hispanic,45-54,Tazewell,Public Order,Shawnee,1
-2020-10-01,MSR: Standard release,Not Discharged,Male,Hispanic,45-54,Whiteside,Drug,Lawndale ATC,1
+2020-10-01,MSR: Standard release,Not Discharged,Male,Hispanic,45-54,Whiteside,Drug,North Lawndale ATC,1
 2020-10-01,MSR: Standard release,Not Discharged,Male,Hispanic,55-64,Cook,Person,Dixon,1
 2020-10-01,MSR: Standard release,Not Discharged,Male,Hispanic,55-64,Cook,Person,Pontiac,1
 2020-10-01,MSR: Standard release,Not Discharged,Male,Hispanic,55-64,Cook,Person,Sheridan,1
@@ -144972,8 +144972,8 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2020-11-01,MSR: Standard release,Not Discharged,Male,Black,35-44,DuPage,Drug,East Moline,1
 2020-11-01,MSR: Standard release,Not Discharged,Male,Black,35-44,DuPage,Person,Jacksonville,1
 2020-11-01,MSR: Standard release,Not Discharged,Male,Black,35-44,DuPage,Property,Illinois River,1
+2020-11-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Kane,Drug,Lawndale ATC,1
 2020-11-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Kane,Drug,Lincoln,1
-2020-11-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Kane,Drug,North Lawndale ATC,1
 2020-11-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Kane,Person,Joliet Treatment Center,1
 2020-11-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Kankakee,Drug,Vandalia,1
 2020-11-01,MSR: Standard release,Not Discharged,Male,Black,35-44,Kankakee,Person,Vandalia,1
@@ -154109,9 +154109,8 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2021-07-01,MSR: IIP Graduate,Not Discharged,Male,White,30-34,Vermilion,Property,Centralia,1
 2021-07-01,MSR: Invalid Custody Date,Not Discharged,Male,White,35-44,Johnson,Property,Menard,1
 2021-07-01,MSR: Invalid Custody Date,Not Discharged,Male,White,35-44,Sangamon,Drug,Sheridan,1
-2021-07-01,MSR: Invalid Release Date,Not Discharged,Male,Black,20-24,Cook,Person,Stateville,1
 2021-07-01,MSR: Invalid Release Date,Not Discharged,Male,Black,45-54,Alexander,Person,Menard,1
-2021-07-01,MSR: Invalid Release Date,Not Discharged,Male,Hispanic,30-34,Cook,Person,Stateville,1
+2021-07-01,MSR: Invalid Release Date,Not Discharged,Male,Black,45-54,Kankakee,Person,Big Muddy River,1
 2021-07-01,MSR: Invalid Release Date,Not Discharged,Male,White,35-44,LaSalle,Property,Dixon,1
 2021-07-01,MSR: Johnson Decision,Not Discharged,Female,American Indian,45-54,Cook,Person,Logan,1
 2021-07-01,MSR: Johnson Decision,Not Discharged,Female,Black,25-29,Cook,Person,Logan,1
@@ -154363,7 +154362,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Cook,Person,Parole Districts,1
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Cook,Person,Pinckneyville,3
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Cook,Person,Shawnee,1
-2021-07-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Cook,Person,Stateville,6
+2021-07-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Cook,Person,Stateville,7
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Cook,Person,Western Illinois,1
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Cook,Property,Jacksonville,1
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Cook,Property,Menard,1
@@ -154653,7 +154652,6 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Kane,Person,East Moline,1
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Kane,Person,Graham,1
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Kane,Person,Robinson,1
-2021-07-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Kankakee,Person,Big Muddy River,1
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Kankakee,Public Order,East Moline,1
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,45-54,Kankakee,Public Order,Stateville,1
 2021-07-01,MSR: Standard release,Not Discharged,Male,Black,45-54,LaSalle,Person,Hill,1
@@ -154746,7 +154744,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2021-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Cook,Drug,Stateville,1
 2021-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Cook,Person,Illinois River,1
 2021-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Cook,Person,Robinson,1
-2021-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Cook,Person,Stateville,1
+2021-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Cook,Person,Stateville,2
 2021-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Cook,Person,Taylorville,2
 2021-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Cook,Public Order,East Moline,1
 2021-07-01,MSR: Standard release,Not Discharged,Male,Hispanic,30-34,Cook,Public Order,Taylorville,1
@@ -156332,7 +156330,6 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2021-09-01,MSR: Invalid Custody Date,Not Discharged,Male,Hispanic,35-44,Cook,Drug,Big Muddy River,1
 2021-09-01,MSR: Invalid Release Date,Not Discharged,Female,Hispanic,45-54,Bureau,Drug,Decatur,1
 2021-09-01,MSR: Invalid Release Date,Not Discharged,Female,White,45-54,Jersey,Drug,Decatur,1
-2021-09-01,MSR: Invalid Release Date,Not Discharged,Male,Black,20-24,Will,Public Order,Danville,1
 2021-09-01,MSR: Invalid Release Date,Not Discharged,Male,White,30-34,Rock Island,Person,Danville,1
 2021-09-01,MSR: Johnson Decision,Not Discharged,Female,Black,20-24,Cook,Person,Logan,1
 2021-09-01,MSR: Johnson Decision,Not Discharged,Female,Black,25-29,Cook,Drug,Logan,1
@@ -156653,6 +156650,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2021-09-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Vermilion,Public Order,Pinckneyville,1
 2021-09-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Vermilion,Public Order,Sheridan,1
 2021-09-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Will,Drug,Danville,1
+2021-09-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Will,Public Order,Danville,1
 2021-09-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Winnebago,Public Order,Stateville,1
 2021-09-01,MSR: Standard release,Not Discharged,Male,Black,20-24,Woodford,Drug,Stateville,1
 2021-09-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Adams,Person,Lawrence,1
@@ -157491,7 +157489,6 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2021-10-01,MSR: Invalid Release Date,Not Discharged,Male,Black,45-54,Cook,Public Order,Dixon,1
 2021-10-01,MSR: Invalid Release Date,Not Discharged,Male,White,20-24,Madison,Property,Sheridan,1
 2021-10-01,MSR: Invalid Release Date,Not Discharged,Male,White,35-44,Jefferson,Person,Western Illinois,1
-2021-10-01,MSR: Invalid Release Date,Not Discharged,Male,White,35-44,Madison,Person,Sheridan,1
 2021-10-01,MSR: Invalid Release Date,Not Discharged,Male,White,45-54,Vermilion,Property,Hill,1
 2021-10-01,MSR: Johnson Decision,Not Discharged,Female,Black,30-34,Cook,Property,Logan,1
 2021-10-01,MSR: Johnson Decision,Not Discharged,Female,Black,30-34,Cook,Public Order,Logan,1
@@ -158478,6 +158475,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2021-10-01,MSR: Standard release,Not Discharged,Male,White,35-44,Macon,Public Order,Stateville,1
 2021-10-01,MSR: Standard release,Not Discharged,Male,White,35-44,Madison,Person,Big Muddy River,1
 2021-10-01,MSR: Standard release,Not Discharged,Male,White,35-44,Madison,Person,Robinson,1
+2021-10-01,MSR: Standard release,Not Discharged,Male,White,35-44,Madison,Person,Sheridan,1
 2021-10-01,MSR: Standard release,Not Discharged,Male,White,35-44,Madison,Property,Illinois River,1
 2021-10-01,MSR: Standard release,Not Discharged,Male,White,35-44,Madison,Property,Robinson,1
 2021-10-01,MSR: Standard release,Not Discharged,Male,White,35-44,Mason,Drug,Jacksonville,1
@@ -160028,6 +160026,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2021-12-01,MSR: Invalid Release Date,Not Discharged,Male,Black,35-44,Vermilion,Public Order,Sheridan,1
 2021-12-01,MSR: Invalid Release Date,Not Discharged,Male,Black,55-64,Cook,Property,Vienna,1
 2021-12-01,MSR: Invalid Release Date,Not Discharged,Male,Black,55-64,Peoria,Person,Kewanee Reentry Center,1
+2021-12-01,MSR: Invalid Release Date,Not Discharged,Male,White,45-54,McLean,Drug,Stateville,1
 2021-12-01,MSR: Johnson Decision,Not Discharged,Female,Black,20-24,Cook,Property,Logan,1
 2021-12-01,MSR: Johnson Decision,Not Discharged,Female,Black,20-24,Cook,Public Order,Logan,1
 2021-12-01,MSR: Johnson Decision,Not Discharged,Female,Black,25-29,Cook,Person,Logan,1
@@ -161021,7 +161020,6 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2021-12-01,MSR: Standard release,Not Discharged,Male,White,45-54,Madison,Person,Southwestern Illinois,1
 2021-12-01,MSR: Standard release,Not Discharged,Male,White,45-54,McLean,Drug,Big Muddy River,1
 2021-12-01,MSR: Standard release,Not Discharged,Male,White,45-54,McLean,Drug,Jacksonville,1
-2021-12-01,MSR: Standard release,Not Discharged,Male,White,45-54,McLean,Drug,Stateville,1
 2021-12-01,MSR: Standard release,Not Discharged,Male,White,45-54,McLean,Property,Robinson,1
 2021-12-01,MSR: Standard release,Not Discharged,Male,White,45-54,Monroe,Drug,North Lawndale ATC,1
 2021-12-01,MSR: Standard release,Not Discharged,Male,White,45-54,Monroe,Person,Jacksonville,1
@@ -161287,6 +161285,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2022-01-01,MSR: Invalid Release Date,Not Discharged,Male,Black,25-29,Cook,Person,Western Illinois,1
 2022-01-01,MSR: Invalid Release Date,Not Discharged,Male,Black,35-44,Sangamon,Person,Graham,1
 2022-01-01,MSR: Invalid Release Date,Not Discharged,Male,Black,35-44,Vermilion,Drug,East Moline,1
+2022-01-01,MSR: Invalid Release Date,Not Discharged,Male,White,35-44,Marion,Property,Graham,1
 2022-01-01,MSR: Invalid Release Date,Not Discharged,Male,White,55-64,Saline,Property,Shawnee,1
 2022-01-01,MSR: Johnson Decision,Not Discharged,Female,American Indian,30-34,Madison,Property,Logan,1
 2022-01-01,MSR: Johnson Decision,Not Discharged,Female,Black,20-24,Cook,Property,Logan,1
@@ -162147,7 +162146,6 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2022-01-01,MSR: Standard release,Not Discharged,Male,White,35-44,Madison,Person,Lincoln,1
 2022-01-01,MSR: Standard release,Not Discharged,Male,White,35-44,Madison,Public Order,Graham,1
 2022-01-01,MSR: Standard release,Not Discharged,Male,White,35-44,Marion,Property,Big Muddy River,1
-2022-01-01,MSR: Standard release,Not Discharged,Male,White,35-44,Marion,Property,Graham,1
 2022-01-01,MSR: Standard release,Not Discharged,Male,White,35-44,Massac,Property,Southwestern Illinois,1
 2022-01-01,MSR: Standard release,Not Discharged,Male,White,35-44,McDonough,Drug,Graham,1
 2022-01-01,MSR: Standard release,Not Discharged,Male,White,35-44,McHenry,Drug,Robinson,1
@@ -162477,6 +162475,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2022-02-01,MSR: IIP Graduate,Not Discharged,Male,White,35-44,St. Clair,Person,Southwestern Illinois,1
 2022-02-01,MSR: IIP Graduate,Not Discharged,Male,White,45-54,Sangamon,Person,Lincoln,1
 2022-02-01,MSR: IIP MSR Violator,Not Discharged,Male,White,35-44,Montgomery,Drug,Centralia,1
+2022-02-01,MSR: Invalid Release Date,Not Discharged,Male,Black,25-29,Cook,Public Order,Sheridan,1
 2022-02-01,MSR: Invalid Release Date,Not Discharged,Male,Black,35-44,Cook,Person,Lincoln,1
 2022-02-01,MSR: Invalid Release Date,Not Discharged,Male,Black,35-44,Cook,Public Order,East Moline,1
 2022-02-01,MSR: Invalid Release Date,Not Discharged,Male,Black,45-54,Kane,Person,Stateville,1
@@ -162830,7 +162829,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2022-02-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,North Lawndale ATC,1
 2022-02-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Pinckneyville,1
 2022-02-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Shawnee,1
-2022-02-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Sheridan,2
+2022-02-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Sheridan,1
 2022-02-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Stateville,3
 2022-02-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Vandalia,1
 2022-02-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Vienna,1
@@ -164814,11 +164813,10 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2022-04-01,MSR: IIP Graduate,Not Discharged,Male,White,35-44,White,Property,Southwestern Illinois,1
 2022-04-01,MSR: IIP MSR Violator,Not Discharged,Male,White,25-29,Cook,Property,Centralia,1
 2022-04-01,MSR: Invalid Custody Date,Not Discharged,Male,White,25-29,McHenry,Drug,Pinckneyville,1
-2022-04-01,MSR: Invalid Release Date,Not Discharged,Male,Black,25-29,Macon,Drug,Lincoln,1
+2022-04-01,MSR: Invalid Release Date,Not Discharged,Male,Black,25-29,Cook,Public Order,Robinson,1
 2022-04-01,MSR: Invalid Release Date,Not Discharged,Male,Black,35-44,Kane,Drug,Hill,1
 2022-04-01,MSR: Invalid Release Date,Not Discharged,Male,White,25-29,Madison,Person,Peoria ATC,1
 2022-04-01,MSR: Invalid Release Date,Not Discharged,Male,White,35-44,Madison,Drug,Lincoln,1
-2022-04-01,MSR: Invalid Release Date,Not Discharged,Male,White,45-54,Franklin,Person,Graham,1
 2022-04-01,MSR: Johnson Decision,Not Discharged,Female,Black,35-44,Cook,Person,Other,1
 2022-04-01,MSR: Johnson Decision,Not Discharged,Female,Black,35-44,Cook,Property,Other,1
 2022-04-01,MSR: Johnson Decision,Not Discharged,Female,Black,35-44,Cook,Public Order,Logan,1
@@ -165155,7 +165153,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,North Lawndale ATC,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Pinckneyville,3
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Pontiac,1
-2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Robinson,3
+2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Robinson,2
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Sheridan,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Stateville,3
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Cook,Public Order,Taylorville,1
@@ -165166,6 +165164,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Kankakee,Public Order,Western Illinois,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,LaSalle,Drug,Western Illinois,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Lake,Person,Kewanee Reentry Center,1
+2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Macon,Drug,Lincoln,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Macon,Public Order,Danville,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,Madison,Person,Vandalia,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,Black,25-29,McLean,Person,Peoria ATC,1
@@ -165683,6 +165682,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2022-04-01,MSR: Standard release,Not Discharged,Male,White,45-54,Cook,Person,Shawnee,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,White,45-54,Effingham,Drug,Graham,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,White,45-54,Fayette,Person,Taylorville,1
+2022-04-01,MSR: Standard release,Not Discharged,Male,White,45-54,Franklin,Person,Graham,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,White,45-54,Franklin,Public Order,Big Muddy River,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,White,45-54,Jersey,Drug,Taylorville,1
 2022-04-01,MSR: Standard release,Not Discharged,Male,White,45-54,Kane,Property,Vandalia,1
@@ -165975,6 +165975,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2022-05-01,MSR: Invalid Release Date,Not Discharged,Male,Black,65-74,Cook,Public Order,Lincoln,1
 2022-05-01,MSR: Invalid Release Date,Not Discharged,Male,Black,65-74,McLean,Drug,Lincoln,1
 2022-05-01,MSR: Invalid Release Date,Not Discharged,Male,White,30-34,Morgan,Drug,Lincoln,1
+2022-05-01,MSR: Invalid Release Date,Not Discharged,Male,White,55-64,McLean,Person,Western Illinois,1
 2022-05-01,MSR: Johnson Decision,Not Discharged,Female,Black,20-24,Cook,Person,Logan,1
 2022-05-01,MSR: Johnson Decision,Not Discharged,Female,Black,25-29,Cook,Person,Other,1
 2022-05-01,MSR: Johnson Decision,Not Discharged,Female,Black,25-29,Cook,Property,Other,1
@@ -166886,7 +166887,6 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2022-05-01,MSR: Standard release,Not Discharged,Male,White,55-64,Johnson,Drug,Menard,1
 2022-05-01,MSR: Standard release,Not Discharged,Male,White,55-64,LaSalle,Drug,Stateville,1
 2022-05-01,MSR: Standard release,Not Discharged,Male,White,55-64,Lake,Person,Illinois River,1
-2022-05-01,MSR: Standard release,Not Discharged,Male,White,55-64,McLean,Person,Western Illinois,1
 2022-05-01,MSR: Standard release,Not Discharged,Male,White,55-64,Sangamon,Public Order,Big Muddy River,1
 2022-05-01,MSR: Standard release,Not Discharged,Male,White,55-64,St. Clair,Person,Robinson,1
 2022-05-01,MSR: Standard release,Not Discharged,Male,White,55-64,St. Clair,Public Order,Menard,1
@@ -187990,6 +187990,7 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2023-10-01,MSR: PRB Release,Not Discharged,Female,Black,20-24,DuPage,Public Order,Logan,1
 2023-10-01,MSR: PRB Release,Not Discharged,Female,Black,25-29,Cook,Person,Logan,1
 2023-10-01,MSR: PRB Release,Not Discharged,Female,Black,25-29,Cook,Property,Other,2
+2023-10-01,MSR: PRB Release,Not Discharged,Female,Black,25-29,Winnebago,Property,Jacksonville,1
 2023-10-01,MSR: PRB Release,Not Discharged,Female,Black,30-34,Cook,Person,Logan,1
 2023-10-01,MSR: PRB Release,Not Discharged,Female,Black,30-34,Cook,Property,Decatur,1
 2023-10-01,MSR: PRB Release,Not Discharged,Female,Black,30-34,Cook,Public Order,Other,1
@@ -188066,7 +188067,6 @@ month,exit_reason,discrsn,sex,race,age_group,county,crime_class,relinst,n
 2023-10-01,MSR: PRB Release,Not Discharged,Male,Black,25-29,Lake,Property,Lincoln,1
 2023-10-01,MSR: PRB Release,Not Discharged,Male,Black,25-29,Lake,Public Order,Lincoln,1
 2023-10-01,MSR: PRB Release,Not Discharged,Male,Black,25-29,Sangamon,Public Order,Vienna,1
-2023-10-01,MSR: PRB Release,Not Discharged,Male,Black,25-29,Winnebago,Property,Jacksonville,1
 2023-10-01,MSR: PRB Release,Not Discharged,Male,Black,30-34,Cook,Drug,Lincoln,2
 2023-10-01,MSR: PRB Release,Not Discharged,Male,Black,30-34,Cook,Drug,Vandalia,1
 2023-10-01,MSR: PRB Release,Not Discharged,Male,Black,30-34,Cook,Public Order,Jacksonville,1

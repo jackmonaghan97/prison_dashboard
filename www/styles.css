@@ -1,0 +1,102 @@
+/* Dashboard styles. Colors are the palette in dashboard/viz.py (NAVY #0a3a60, BLUE #1565c0,
+   SURFACE #fcfcfb, PAGE #f9f9f7, GRID #e1e0d9, AXIS #c3c2b7, ...) - change both together. */
+:root { --bs-primary: #0a3a60; --bs-primary-rgb: 10,58,96; --bs-link-color: #1565c0;
+         --bs-link-hover-color: #0a3a60; --bs-link-color-rgb: 21,101,192; }
+body { background: #f9f9f7; }
+.card { background: #fcfcfb; border: 1px solid rgba(11,11,11,0.10); box-shadow: none; }
+.card-header { background: transparent; border-bottom: 1px solid #e1e0d9;
+                font-weight: 600; color: #0b0b0b; }
+.card-footer { background: transparent; border-top: 1px solid #e1e0d9; }
+.bslib-sidebar-layout > .sidebar { background: #fcfcfb; }
+
+/* navbar: ICJIA navy (bg/theme set via navbar_options) */
+.navbar .navbar-brand { font-weight: 600; }
+.navbar .nav-link.active { font-weight: 600; box-shadow: inset 0 -3px 0 #8fbbea; }
+/* "|" separators between the dashboard titles */
+.navbar .navbar-nav > .nav-item + .nav-item:not(.ms-auto) { display: flex; align-items: center; }
+.navbar .navbar-nav > .nav-item + .nav-item:not(.ms-auto)::before {
+    content: "|"; color: rgba(255,255,255,0.45); padding: 0 0.25rem; }
+.navbar .nav-link.text-muted { color: rgba(255,255,255,0.6) !important; }
+
+/* value boxes: compact - the content sets the height, not a minimum */
+.bslib-value-box { border: 1px solid rgba(11,11,11,0.10); box-shadow: none; min-height: 0; }
+.bslib-value-box.bg-primary { background: #0a3a60 !important; border-color: #0a3a60; }
+.bslib-value-box .value-box-area { padding: 0.7rem 1rem; gap: 0; }
+.bslib-value-box .value-box-title { font-size: 0.85rem; margin-bottom: 0.1rem; }
+.bslib-value-box .value-box-value { font-weight: 600; font-size: 1.7rem; line-height: 1.15;
+                                     margin-bottom: 0.1rem; }
+.bslib-value-box p { margin-bottom: 0; font-size: 0.8rem; }
+
+/* sidebar inputs, all keyed to the same blue */
+.sidebar .shiny-input-container { margin-bottom: 0.6rem; }
+.sidebar .selectize-control.multi .selectize-input > div { background: #ebf6ff; color: #0a3a60;
+                                                           border: 1px solid #bcd8f5; }
+.sidebar .selectize-input, .sidebar .form-select { border-color: #c3c2b7; }
+.form-check-input:checked { background-color: #1565c0; border-color: #1565c0; }
+.irs--shiny .irs-bar { background: #1565c0; border-color: #1565c0; }
+.irs--shiny .irs-from, .irs--shiny .irs-to, .irs--shiny .irs-single { background: #0a3a60; }
+.irs--shiny .irs-handle { border-color: #1565c0; }
+.btn-outline-secondary { color: #0a3a60; border-color: #466c8c; }
+.btn-outline-secondary:hover { background: #0a3a60; border-color: #0a3a60; color: #fff; }
+
+/* "Download CSV" buttons under charts and tables */
+.download-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+                 gap: 0.4rem 1rem; }
+.download-row > .download-csv { margin-left: auto; }
+.download-csv { display: inline-flex; align-items: center; gap: 0.35rem; }
+.download-csv:focus-visible { outline: 2px solid #0a3a60; outline-offset: 2px; }
+
+/* overview tiles */
+.home { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+.home-heading { font-weight: 700; margin-bottom: 0.4rem; color: #0a3a60; }
+.home-lead { color: #52514e; max-width: 760px; margin-bottom: 1.5rem; }
+.home-tile { display: block; width: 100%; text-align: left; white-space: normal;
+              background: #fcfcfb; color: #0b0b0b; border: 1px solid rgba(11,11,11,0.12);
+              border-radius: 0.6rem; padding: 0; transition: border-color .15s, box-shadow .15s; }
+.home-tile:hover, .home-tile:focus { border-color: #1565c0; box-shadow: 0 0 0 3px rgba(21,101,192,0.15);
+                                      background: #fcfcfb; color: #0b0b0b; }
+.tile-body { padding: 1.4rem 1.5rem 1.2rem; display: flex; flex-direction: column; gap: 0.6rem; height: 100%; }
+.tile-title { font-size: 1.5rem; font-weight: 700; margin: 0; color: #0a3a60; }
+.tile-blurb { margin: 0; color: #52514e; }
+.tile-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.tile-chip { font-size: 0.78rem; padding: 0.18rem 0.6rem; border-radius: 999px;
+              background: #e9e9e6; border: 1px solid #d5d5d0; color: #52514e; }
+.tile-source { margin: 0; font-size: 0.8rem; color: #898781; }
+.tile-cta { margin-top: auto; font-weight: 600; color: #1565c0; }
+
+/* sortable tables */
+.sortable-wrap { overflow: auto; }
+.sortable-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.sortable-table th { position: sticky; top: 0; background: #fcfcfb; text-align: left;
+                      padding: 0.45rem 0.6rem; border-bottom: 2px solid #e1e0d9; cursor: pointer;
+                      user-select: none; white-space: nowrap; color: #0b0b0b; }
+.sortable-table th:hover { color: #1565c0; }
+.sortable-table th::after { content: "⇅"; color: #c3c2b7; margin-left: 0.35rem; font-size: 0.75rem; }
+.sortable-table th.asc::after { content: "▲"; color: #1565c0; }
+.sortable-table th.desc::after { content: "▼"; color: #1565c0; }
+.sortable-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #e1e0d9; white-space: nowrap; }
+.sortable-table td[data-v] { text-align: right; font-variant-numeric: tabular-nums; }
+.sortable-table th:not(:first-child) { text-align: right; }
+.sortable-table tr.pinned td { font-weight: 600; background: #ebf6ff;
+                                position: sticky; top: 34px; z-index: 1; }
+.sortable-table th { z-index: 2; }
+
+/* chart-values tables (collapsed under stacked charts) */
+.layer-details { margin: 0.25rem 0 0.5rem; padding: 0 1rem; }
+.layer-details > summary { cursor: pointer; font-size: 0.85rem; color: #1565c0; }
+.layer-details > summary:hover, .layer-details > summary:focus { color: #0a3a60; }
+.layer-wrap { overflow: auto; max-height: 320px; margin-top: 0.4rem; }
+.layer-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.layer-table th { position: sticky; top: 0; background: #fcfcfb; padding: 0.35rem 0.5rem;
+                   border-bottom: 2px solid #e1e0d9; text-align: right; white-space: nowrap; color: #0b0b0b; }
+.layer-table th:first-child, .layer-table tbody th { text-align: left; font-weight: 500; }
+.layer-table tbody th { position: static; border-bottom: 1px solid #e1e0d9; }
+.layer-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid #e1e0d9; text-align: right;
+                   white-space: nowrap; font-variant-numeric: tabular-nums; }
+.layer-table td:last-child { font-weight: 600; }
+.layer-table.no-total td:last-child { font-weight: 400; }
+
+/* notes (common.note): a "\n" in the text starts a new line */
+.note {
+    white-space: pre-line;
+}

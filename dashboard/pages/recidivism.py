@@ -4,7 +4,8 @@ import pandas as pd
 from shiny import module, reactive, render, ui
 
 from .. import data, viz
-from ..common import apply_demo, crime_filter, demo_filters, multi_select, note, reset_button, reset_demo, selected
+from ..common import (apply_demo, crime_filter, demo_filters, download_footer, multi_select, note, reset_button,
+                      reset_demo, selected)
 
 RETURN_TYPES = {"court": "Court admission (new sentence)",
                 "newsent": "New sentence violator",
@@ -68,19 +69,25 @@ def page_ui():
         ),
         ui.layout_columns(
             ui.card(ui.card_header("Recidivism rate by release year"), viz.output_plot("year_chart"),
-                    ui.card_footer(note("Colored by the type of the first return."))),
+                    download_footer("year_csv", "the recidivism by release year chart",
+                                    note("Colored by the type of the first return."))),
             ui.card(ui.card_header("Cumulative share returned, by months since release"),
                     viz.output_plot("curve_chart"),
-                    ui.card_footer(note("By race. Each line stops at the selected window."))),
+                    download_footer("curve_csv", "the cumulative share returned chart",
+                                    note("By race. Each line stops at the selected window."))),
             col_widths={"sm": 12, "xl": [5, 7]},
         ),
         ui.layout_columns(
-            ui.card(ui.card_header("By race"), viz.output_plot("race_chart")),
-            ui.card(ui.card_header("By age at release"), viz.output_plot("age_chart")),
-            ui.card(ui.card_header("By offense class"), viz.output_plot("crime_chart")),
+            ui.card(ui.card_header("By race"), viz.output_plot("race_chart"),
+                    download_footer("race_csv", "the recidivism by race chart")),
+            ui.card(ui.card_header("By age at release"), viz.output_plot("age_chart"),
+                    download_footer("age_csv", "the recidivism by age at release chart")),
+            ui.card(ui.card_header("By offense class"), viz.output_plot("crime_chart"),
+                    download_footer("crime_csv", "the recidivism by offense class chart")),
             col_widths={"sm": 12, "xl": [4, 4, 4]},
         ),
-        ui.card(ui.card_header("Table view - release cohorts"), ui.output_data_frame("table")),
+        ui.card(ui.card_header("Table view - release cohorts"), ui.output_data_frame("table"),
+                download_footer("table_csv", "the release cohorts table")),
     )
 
 
@@ -164,14 +171,42 @@ def page_server(input, output, session):
                                  f"year{'s' if window() > 1 else ''}, by {what_by}: "
                                  f"{viz.alt_values(zip(names, g['rate']), '{:.0%}')}.")
 
+    def _file(what: str) -> str:
+        county = "Illinois" if input.county() == "All counties" else input.county()
+        return f"recidivism_{window()}y_{what}_{county}.csv".replace(" ", "_")
+
+    def _rate_csv(g: pd.DataFrame, x: str, name: str, order=None, labels=None) -> pd.DataFrame:
+        """A _rate_by table as a download: one row per group (in `order`), raw counts and the rate."""
+        if order is not None:
+            g = g.set_index(x).reindex([o for o in order if o in g[x].values]).reset_index()
+        return pd.DataFrame({name: [labels(v) for v in g[x]] if labels else g[x], "Released": g["released"],
+                             f"Returned within {window()}y": g["returned"], "Rate": g["rate"]})
+
+    @reactive.calc
+    def year_types() -> tuple[pd.Series, pd.DataFrame]:
+        """Releases per release year, and returns per release year by the type of the first return."""
+        c = cohort()
+        released = c.groupby("release_year").size()
+        by_type = (c.loc[c["returned"]].groupby(["release_year", "return_type"]).size()
+                    .unstack("return_type").reindex(released.index).fillna(0))
+        return released, by_type
+
+    @viz.download_csv(lambda: _file("by_release_year_and_return_type"))
+    def year_csv():
+        released, by_type = year_types()
+        out = pd.DataFrame({"Release year": released.index, "Released": released.values})
+        for t in RETURN_TYPES:
+            if t in by_type.columns:
+                out[f"Returned - {RETURN_TYPES[t]}"] = by_type[t].values
+        out["Rate"] = by_type.sum(axis=1).values / released.values
+        return out
+
     @viz.render_plot
     def year_chart():
         c = cohort()
         if c.empty:
             return viz.empty_figure(height=320)
-        released = c.groupby("release_year").size()
-        by_type = (c.loc[c["returned"]].groupby(["release_year", "return_type"]).size()
-                    .unstack("return_type").reindex(released.index).fillna(0))
+        released, by_type = year_types()
         years = [str(y) for y in released.index]
         total = by_type.sum(axis=1) / released
         fig = viz.figure(320, barmode="stack", yaxis=dict(tickformat=".0%", rangemode="tozero"))
@@ -192,6 +227,19 @@ def page_server(input, output, session):
                                  f"first return ({', '.join(RETURN_TYPES[t] for t in by_type.columns)}). "
                                  f"Overall rate by release year: {viz.alt_values(zip(years, total), '{:.0%}')}.")
 
+    @viz.download_csv(lambda: _file("by_race"))
+    def race_csv():
+        return _rate_csv(_rate_by(cohort(), "race"), "race", "Race / ethnicity", order=viz.RACE_ORDER)
+
+    @viz.download_csv(lambda: _file("by_age_at_release"))
+    def age_csv():
+        return _rate_csv(_rate_by(cohort(), "age_group"), "age_group", "Age at release",
+                         order=viz.AGE_ORDER, labels=viz.age_label)
+
+    @viz.download_csv(lambda: _file("by_offense_class"))
+    def crime_csv():
+        return _rate_csv(_rate_by(cohort(), "crime_class"), "crime_class", "Offense class", order=viz.CRIME_ORDER)
+
     @viz.render_plot
     def race_chart():
         return _bar(_rate_by(cohort(), "race"), "race", viz.RACE_COLOR, order=viz.RACE_ORDER, what_by="race / ethnicity")
@@ -205,22 +253,39 @@ def page_server(input, output, session):
     def crime_chart():
         return _bar(_rate_by(cohort(), "crime_class"), "crime_class", viz.CRIME_COLOR, order=viz.CRIME_ORDER, what_by="offense class")
 
+    @reactive.calc
+    def curves() -> pd.DataFrame:
+        """Months since release x race: cumulative share returned (races with 50+ releases)."""
+        c = cohort()
+        months = np.arange(0, window() * 12 + 1)
+        out = pd.DataFrame(index=pd.Index(months, name="Months since release"))
+        for race in viz.RACE_ORDER:
+            s = c.loc[c["race"] == race, "days_to_return"]
+            if len(s) < 50:
+                continue
+            days = s.dropna().to_numpy()
+            out[race] = [(days <= m * 30.44).sum() / len(s) for m in months]
+        return out
+
+    @viz.download_csv(lambda: _file("cumulative_share_returned_by_race"))
+    def curve_csv():
+        return curves().reset_index()
+
     @viz.render_plot
     def curve_chart():
         c = cohort()
         if c.empty:
             return viz.empty_figure(height=320)
-        months = np.arange(0, window() * 12 + 1)
+        cv = curves()
+        months = cv.index.to_numpy()
         fig = viz.figure(320, hovermode="x unified",
                          xaxis=dict(title="Months since release", dtick=6),
                          yaxis=dict(tickformat=".0%", rangemode="tozero"))
         ends = []
         for i, race in enumerate(viz.RACE_ORDER):
-            s = c.loc[c["race"] == race, "days_to_return"]
-            if len(s) < 50:
+            if race not in cv.columns:
                 continue
-            days = s.dropna().to_numpy()
-            cum = [(days <= m * 30.44).sum() / len(s) for m in months]
+            cum = list(cv[race])
             # a different marker shape per line, every third month, so the lines stay apart without color
             fig.add_scatter(name=race, x=months, y=cum, mode="lines+markers",
                             line=dict(color=viz.RACE_COLOR[race], width=2),
@@ -232,6 +297,10 @@ def page_server(input, output, session):
                                  f"since release (0 to {months[-1]}), one line per race / ethnicity with a distinct "
                                  f"marker shape. Share returned at {months[-1]} months: "
                                  f"{viz.alt_values(ends, '{:.0%}')}.")
+
+    @viz.download_csv(lambda: _file("by_release_year"))
+    def table_csv():
+        return _rate_csv(_rate_by(cohort(), "release_year"), "release_year", "Release year")
 
     @render.data_frame
     def table():

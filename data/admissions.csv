@@ -31021,7 +31021,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2020-10-01,Court admission,Male,Hispanic,25-29,Scott,Drug,1
 2020-10-01,Court admission,Male,Hispanic,25-29,Will,Public Order,1
 2020-10-01,Court admission,Male,Hispanic,30-34,Cook,Drug,1
-2020-10-01,Court admission,Male,Hispanic,30-34,Cook,Person,3
+2020-10-01,Court admission,Male,Hispanic,30-34,Cook,Person,2
 2020-10-01,Court admission,Male,Hispanic,30-34,Cook,Public Order,3
 2020-10-01,Court admission,Male,Hispanic,30-34,DeKalb,Person,1
 2020-10-01,Court admission,Male,Hispanic,30-34,DuPage,Person,1
@@ -31380,7 +31380,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2020-10-01,Technical violator,Male,Hispanic,25-29,Lake,Person,1
 2020-10-01,Technical violator,Male,Hispanic,25-29,Peoria,Public Order,1
 2020-10-01,Technical violator,Male,Hispanic,30-34,Cook,Drug,2
-2020-10-01,Technical violator,Male,Hispanic,30-34,Cook,Person,1
+2020-10-01,Technical violator,Male,Hispanic,30-34,Cook,Person,2
 2020-10-01,Technical violator,Male,Hispanic,30-34,Cook,Property,1
 2020-10-01,Technical violator,Male,Hispanic,30-34,Cook,Public Order,4
 2020-10-01,Technical violator,Male,Hispanic,30-34,McHenry,Person,1
@@ -31694,6 +31694,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2020-11-01,Court admission,Male,Other,30-34,Cook,Drug,1
 2020-11-01,Court admission,Male,Other,30-34,McHenry,Drug,1
 2020-11-01,Court admission,Male,Other,30-34,Vermilion,Public Order,1
+2020-11-01,Court admission,Male,Other,35-44,Will,Person,1
 2020-11-01,Court admission,Male,White,18-19,Bond,Property,1
 2020-11-01,Court admission,Male,White,20-24,Bond,Person,1
 2020-11-01,Court admission,Male,White,20-24,Christian,Property,1
@@ -31951,7 +31952,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2020-11-01,Technical violator,Male,Hispanic,45-54,Will,Drug,1
 2020-11-01,Technical violator,Male,Hispanic,55-64,Cook,Person,2
 2020-11-01,Technical violator,Male,Other,25-29,Will,Person,1
-2020-11-01,Technical violator,Male,Other,35-44,Will,Person,1
 2020-11-01,Technical violator,Male,White,20-24,Christian,Drug,1
 2020-11-01,Technical violator,Male,White,20-24,Coles,Person,1
 2020-11-01,Technical violator,Male,White,20-24,Ford,Property,1
@@ -32427,6 +32427,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2020-12-01,New sentence violator,Male,Black,30-34,Macon,Public Order,1
 2020-12-01,New sentence violator,Male,Black,45-54,Boone,Public Order,1
 2020-12-01,New sentence violator,Male,Black,45-54,Kankakee,Property,1
+2020-12-01,New sentence violator,Male,Black,45-54,Lake,Property,1
 2020-12-01,New sentence violator,Male,Hispanic,20-24,Kane,Property,1
 2020-12-01,New sentence violator,Male,White,20-24,Madison,Property,1
 2020-12-01,New sentence violator,Male,White,25-29,Mercer,Property,1
@@ -32522,7 +32523,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2020-12-01,Technical violator,Male,Black,45-54,Cook,Property,3
 2020-12-01,Technical violator,Male,Black,45-54,Cook,Public Order,2
 2020-12-01,Technical violator,Male,Black,45-54,Kane,Public Order,1
-2020-12-01,Technical violator,Male,Black,45-54,Lake,Property,1
 2020-12-01,Technical violator,Male,Black,45-54,Marion,Person,1
 2020-12-01,Technical violator,Male,Black,45-54,Peoria,Drug,1
 2020-12-01,Technical violator,Male,Black,45-54,Sangamon,Property,1
@@ -32808,7 +32808,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2021-01-01,Court admission,Male,Black,45-54,Winnebago,Public Order,1
 2021-01-01,Court admission,Male,Black,55-64,Boone,Drug,1
 2021-01-01,Court admission,Male,Black,55-64,Cook,Drug,4
-2021-01-01,Court admission,Male,Black,55-64,Cook,Person,3
+2021-01-01,Court admission,Male,Black,55-64,Cook,Person,2
 2021-01-01,Court admission,Male,Black,55-64,Cook,Property,5
 2021-01-01,Court admission,Male,Black,55-64,Cook,Public Order,1
 2021-01-01,Court admission,Male,Black,55-64,Macon,Person,1
@@ -33123,6 +33123,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2021-01-01,Technical violator,Male,Black,45-54,Lake,Property,1
 2021-01-01,Technical violator,Male,Black,45-54,St. Clair,Public Order,1
 2021-01-01,Technical violator,Male,Black,45-54,Winnebago,Person,1
+2021-01-01,Technical violator,Male,Black,55-64,Cook,Person,1
 2021-01-01,Technical violator,Male,Black,55-64,Cook,Property,2
 2021-01-01,Technical violator,Male,Black,55-64,Macon,Person,1
 2021-01-01,Technical violator,Male,Black,55-64,Macon,Public Order,1
@@ -33558,7 +33559,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2021-02-01,Court admission,Male,White,30-34,Cass,Person,1
 2021-02-01,Court admission,Male,White,30-34,Coles,Person,1
 2021-02-01,Court admission,Male,White,30-34,Cook,Drug,1
-2021-02-01,Court admission,Male,White,30-34,Cook,Person,1
+2021-02-01,Court admission,Male,White,30-34,Cook,Person,2
 2021-02-01,Court admission,Male,White,30-34,Cook,Property,2
 2021-02-01,Court admission,Male,White,30-34,Crawford,Property,1
 2021-02-01,Court admission,Male,White,30-34,DeKalb,Drug,1
@@ -33844,7 +33845,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2021-02-01,Technical violator,Male,White,25-29,Williamson,Person,1
 2021-02-01,Technical violator,Male,White,25-29,Woodford,Person,1
 2021-02-01,Technical violator,Male,White,30-34,Coles,Person,1
-2021-02-01,Technical violator,Male,White,30-34,Cook,Person,1
 2021-02-01,Technical violator,Male,White,30-34,Jersey,Public Order,1
 2021-02-01,Technical violator,Male,White,30-34,Kane,Drug,1
 2021-02-01,Technical violator,Male,White,30-34,Lee,Person,1
@@ -37260,7 +37260,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2021-07-01,Court admission,Male,Black,45-54,Winnebago,Person,1
 2021-07-01,Court admission,Male,Black,45-54,Woodford,Drug,1
 2021-07-01,Court admission,Male,Black,55-64,Champaign,Person,1
-2021-07-01,Court admission,Male,Black,55-64,Cook,Drug,7
+2021-07-01,Court admission,Male,Black,55-64,Cook,Drug,6
 2021-07-01,Court admission,Male,Black,55-64,Cook,Person,3
 2021-07-01,Court admission,Male,Black,55-64,Cook,Property,4
 2021-07-01,Court admission,Male,Black,55-64,Cook,Public Order,5
@@ -37817,7 +37817,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2021-07-01,Technical violator,Male,Black,45-54,Will,Property,1
 2021-07-01,Technical violator,Male,Black,45-54,Winnebago,Person,1
 2021-07-01,Technical violator,Male,Black,45-54,Winnebago,Public Order,1
-2021-07-01,Technical violator,Male,Black,55-64,Cook,Drug,1
+2021-07-01,Technical violator,Male,Black,55-64,Cook,Drug,2
 2021-07-01,Technical violator,Male,Black,55-64,Cook,Person,2
 2021-07-01,Technical violator,Male,Black,55-64,Cook,Property,2
 2021-07-01,Technical violator,Male,Black,55-64,Cook,Public Order,3
@@ -38827,7 +38827,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2021-09-01,Court admission,Male,Black,25-29,Cook,Drug,6
 2021-09-01,Court admission,Male,Black,25-29,Cook,Person,24
 2021-09-01,Court admission,Male,Black,25-29,Cook,Property,5
-2021-09-01,Court admission,Male,Black,25-29,Cook,Public Order,59
+2021-09-01,Court admission,Male,Black,25-29,Cook,Public Order,60
 2021-09-01,Court admission,Male,Black,25-29,DeKalb,Person,1
 2021-09-01,Court admission,Male,Black,25-29,DuPage,Drug,1
 2021-09-01,Court admission,Male,Black,25-29,DuPage,Person,1
@@ -39361,7 +39361,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2021-09-01,Technical violator,Male,Black,25-29,Cook,Drug,2
 2021-09-01,Technical violator,Male,Black,25-29,Cook,Person,19
 2021-09-01,Technical violator,Male,Black,25-29,Cook,Property,10
-2021-09-01,Technical violator,Male,Black,25-29,Cook,Public Order,21
+2021-09-01,Technical violator,Male,Black,25-29,Cook,Public Order,20
 2021-09-01,Technical violator,Male,Black,25-29,Jackson,Person,1
 2021-09-01,Technical violator,Male,Black,25-29,Kane,Person,1
 2021-09-01,Technical violator,Male,Black,25-29,Kane,Property,1
@@ -40527,7 +40527,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2021-11-01,Court admission,Male,Black,30-34,Champaign,Person,1
 2021-11-01,Court admission,Male,Black,30-34,Champaign,Public Order,2
 2021-11-01,Court admission,Male,Black,30-34,Cook,Drug,2
-2021-11-01,Court admission,Male,Black,30-34,Cook,Person,10
+2021-11-01,Court admission,Male,Black,30-34,Cook,Person,9
 2021-11-01,Court admission,Male,Black,30-34,Cook,Property,8
 2021-11-01,Court admission,Male,Black,30-34,Cook,Public Order,22
 2021-11-01,Court admission,Male,Black,30-34,DuPage,Property,2
@@ -41005,7 +41005,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2021-11-01,Technical violator,Male,Black,25-29,Sangamon,Public Order,2
 2021-11-01,Technical violator,Male,Black,25-29,Winnebago,Person,1
 2021-11-01,Technical violator,Male,Black,30-34,Cook,Drug,1
-2021-11-01,Technical violator,Male,Black,30-34,Cook,Person,8
+2021-11-01,Technical violator,Male,Black,30-34,Cook,Person,9
 2021-11-01,Technical violator,Male,Black,30-34,Cook,Property,1
 2021-11-01,Technical violator,Male,Black,30-34,Cook,Public Order,3
 2021-11-01,Technical violator,Male,Black,30-34,DuPage,Person,1
@@ -42196,6 +42196,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-01-01,Court admission,Male,Hispanic,35-44,Kane,Property,1
 2022-01-01,Court admission,Male,Hispanic,35-44,Will,Public Order,1
 2022-01-01,Court admission,Male,Hispanic,45-54,Cook,Drug,1
+2022-01-01,Court admission,Male,Hispanic,45-54,Cook,Person,1
 2022-01-01,Court admission,Male,Hispanic,45-54,Cook,Public Order,1
 2022-01-01,Court admission,Male,Hispanic,45-54,Grundy,Public Order,1
 2022-01-01,Court admission,Male,Hispanic,65-74,Kane,Drug,1
@@ -42508,7 +42509,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-01-01,Technical violator,Male,Hispanic,35-44,Kankakee,Person,1
 2022-01-01,Technical violator,Male,Hispanic,35-44,Lake,Person,1
 2022-01-01,Technical violator,Male,Hispanic,45-54,Cass,Person,1
-2022-01-01,Technical violator,Male,Hispanic,45-54,Cook,Person,1
 2022-01-01,Technical violator,Male,Hispanic,55-64,Cook,Person,1
 2022-01-01,Technical violator,Male,Hispanic,75<,Lake,Person,1
 2022-01-01,Technical violator,Male,Other,55-64,Cook,Person,1
@@ -42871,7 +42871,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-02-01,Court admission,Male,Hispanic,20-24,Kane,Public Order,1
 2022-02-01,Court admission,Male,Hispanic,20-24,Lake,Person,2
 2022-02-01,Court admission,Male,Hispanic,25-29,Cook,Drug,1
-2022-02-01,Court admission,Male,Hispanic,25-29,Cook,Person,3
+2022-02-01,Court admission,Male,Hispanic,25-29,Cook,Person,2
 2022-02-01,Court admission,Male,Hispanic,25-29,Cook,Property,2
 2022-02-01,Court admission,Male,Hispanic,25-29,Cook,Public Order,3
 2022-02-01,Court admission,Male,Hispanic,25-29,DuPage,Public Order,1
@@ -43307,7 +43307,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-02-01,Technical violator,Male,Hispanic,20-24,DeKalb,Person,1
 2022-02-01,Technical violator,Male,Hispanic,20-24,Kane,Drug,1
 2022-02-01,Technical violator,Male,Hispanic,20-24,Kane,Person,1
-2022-02-01,Technical violator,Male,Hispanic,25-29,Cook,Person,2
+2022-02-01,Technical violator,Male,Hispanic,25-29,Cook,Person,3
 2022-02-01,Technical violator,Male,Hispanic,30-34,Bureau,Property,1
 2022-02-01,Technical violator,Male,Hispanic,30-34,Cook,Property,1
 2022-02-01,Technical violator,Male,Hispanic,30-34,DeKalb,Person,1
@@ -43946,6 +43946,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-03-01,Court admission,Male,White,35-44,Massac,Public Order,1
 2022-03-01,Court admission,Male,White,35-44,McDonough,Property,1
 2022-03-01,Court admission,Male,White,35-44,McHenry,Drug,1
+2022-03-01,Court admission,Male,White,35-44,McHenry,Person,1
 2022-03-01,Court admission,Male,White,35-44,McLean,Drug,2
 2022-03-01,Court admission,Male,White,35-44,McLean,Property,2
 2022-03-01,Court admission,Male,White,35-44,McLean,Public Order,1
@@ -44262,7 +44263,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-03-01,Technical violator,Male,White,35-44,Lawrence,Person,1
 2022-03-01,Technical violator,Male,White,35-44,Macon,Drug,1
 2022-03-01,Technical violator,Male,White,35-44,Marion,Public Order,1
-2022-03-01,Technical violator,Male,White,35-44,McHenry,Person,1
 2022-03-01,Technical violator,Male,White,35-44,McLean,Public Order,1
 2022-03-01,Technical violator,Male,White,35-44,Montgomery,Person,2
 2022-03-01,Technical violator,Male,White,35-44,Pike,Drug,1
@@ -45532,7 +45532,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-05-01,Court admission,Male,Black,35-44,Cook,Drug,13
 2022-05-01,Court admission,Male,Black,35-44,Cook,Person,28
 2022-05-01,Court admission,Male,Black,35-44,Cook,Property,9
-2022-05-01,Court admission,Male,Black,35-44,Cook,Public Order,54
+2022-05-01,Court admission,Male,Black,35-44,Cook,Public Order,53
 2022-05-01,Court admission,Male,Black,35-44,DeKalb,Person,1
 2022-05-01,Court admission,Male,Black,35-44,DeKalb,Public Order,1
 2022-05-01,Court admission,Male,Black,35-44,DuPage,Drug,2
@@ -46142,7 +46142,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-05-01,Technical violator,Male,Black,35-44,Cook,Drug,3
 2022-05-01,Technical violator,Male,Black,35-44,Cook,Person,9
 2022-05-01,Technical violator,Male,Black,35-44,Cook,Property,3
-2022-05-01,Technical violator,Male,Black,35-44,Cook,Public Order,11
+2022-05-01,Technical violator,Male,Black,35-44,Cook,Public Order,12
 2022-05-01,Technical violator,Male,Black,35-44,Edwards,Person,1
 2022-05-01,Technical violator,Male,Black,35-44,Franklin,Person,1
 2022-05-01,Technical violator,Male,Black,35-44,Kane,Person,1
@@ -47707,6 +47707,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-07-01,Court admission,Male,White,45-54,Winnebago,Property,2
 2022-07-01,Court admission,Male,White,45-54,Woodford,Drug,1
 2022-07-01,Court admission,Male,White,45-54,Woodford,Public Order,1
+2022-07-01,Court admission,Male,White,55-64,Champaign,Property,1
 2022-07-01,Court admission,Male,White,55-64,Clinton,Public Order,1
 2022-07-01,Court admission,Male,White,55-64,Cook,Person,1
 2022-07-01,Court admission,Male,White,55-64,Cook,Property,2
@@ -47762,7 +47763,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-07-01,New sentence violator,Male,White,35-44,Madison,Public Order,1
 2022-07-01,New sentence violator,Male,White,35-44,Whiteside,Public Order,1
 2022-07-01,New sentence violator,Male,White,45-54,St. Clair,Drug,1
-2022-07-01,New sentence violator,Male,White,55-64,Champaign,Property,1
 2022-07-01,New sentence violator,Male,White,55-64,Williamson,Person,1
 2022-07-01,Other,Male,Black,18-19,Cook,Public Order,2
 2022-07-01,Other,Male,Black,25-29,Cook,Drug,1
@@ -48215,7 +48215,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-08-01,Court admission,Male,Black,45-54,Coles,Drug,1
 2022-08-01,Court admission,Male,Black,45-54,Coles,Person,1
 2022-08-01,Court admission,Male,Black,45-54,Cook,Drug,10
-2022-08-01,Court admission,Male,Black,45-54,Cook,Person,2
+2022-08-01,Court admission,Male,Black,45-54,Cook,Person,1
 2022-08-01,Court admission,Male,Black,45-54,Cook,Property,5
 2022-08-01,Court admission,Male,Black,45-54,Cook,Public Order,17
 2022-08-01,Court admission,Male,Black,45-54,DuPage,Drug,1
@@ -48680,7 +48680,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-08-01,Technical violator,Male,Black,35-44,Sangamon,Person,1
 2022-08-01,Technical violator,Male,Black,35-44,Winnebago,Drug,1
 2022-08-01,Technical violator,Male,Black,45-54,Cook,Drug,3
-2022-08-01,Technical violator,Male,Black,45-54,Cook,Person,5
+2022-08-01,Technical violator,Male,Black,45-54,Cook,Person,6
 2022-08-01,Technical violator,Male,Black,45-54,Cook,Property,3
 2022-08-01,Technical violator,Male,Black,45-54,Cook,Public Order,2
 2022-08-01,Technical violator,Male,Black,45-54,Grundy,Public Order,1
@@ -51568,7 +51568,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-12-01,Court admission,Male,Black,35-44,Cook,Person,19
 2022-12-01,Court admission,Male,Black,35-44,Cook,Property,6
 2022-12-01,Court admission,Male,Black,35-44,Cook,Public Order,29
-2022-12-01,Court admission,Male,Black,35-44,DeKalb,Person,1
 2022-12-01,Court admission,Male,Black,35-44,DuPage,Person,1
 2022-12-01,Court admission,Male,Black,35-44,DuPage,Property,1
 2022-12-01,Court admission,Male,Black,35-44,Fulton,Public Order,1
@@ -52019,6 +52018,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2022-12-01,Technical violator,Male,Black,35-44,Cook,Person,11
 2022-12-01,Technical violator,Male,Black,35-44,Cook,Property,1
 2022-12-01,Technical violator,Male,Black,35-44,Cook,Public Order,11
+2022-12-01,Technical violator,Male,Black,35-44,DeKalb,Person,1
 2022-12-01,Technical violator,Male,Black,35-44,DuPage,Drug,1
 2022-12-01,Technical violator,Male,Black,35-44,Henry,Public Order,1
 2022-12-01,Technical violator,Male,Black,35-44,Jackson,Property,1
@@ -52447,6 +52447,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2023-01-01,Court admission,Male,Black,55-64,Macon,Drug,1
 2023-01-01,Court admission,Male,Black,55-64,Macon,Person,1
 2023-01-01,Court admission,Male,Black,55-64,Sangamon,Person,1
+2023-01-01,Court admission,Male,Black,55-64,Vermilion,Person,1
 2023-01-01,Court admission,Male,Black,55-64,Will,Drug,2
 2023-01-01,Court admission,Male,Black,55-64,Will,Person,1
 2023-01-01,Court admission,Male,Black,65-74,Champaign,Person,1
@@ -52890,7 +52891,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2023-01-01,Technical violator,Male,Black,55-64,Cook,Public Order,4
 2023-01-01,Technical violator,Male,Black,55-64,Kane,Drug,1
 2023-01-01,Technical violator,Male,Black,55-64,Kane,Person,1
-2023-01-01,Technical violator,Male,Black,55-64,Vermilion,Person,1
 2023-01-01,Technical violator,Male,Black,55-64,Winnebago,Person,1
 2023-01-01,Technical violator,Male,Black,65-74,Cook,Person,1
 2023-01-01,Technical violator,Male,Black,65-74,Cook,Public Order,1
@@ -55838,7 +55838,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2023-05-01,Court admission,Male,Black,25-29,Champaign,Property,1
 2023-05-01,Court admission,Male,Black,25-29,Champaign,Public Order,1
 2023-05-01,Court admission,Male,Black,25-29,Cook,Drug,4
-2023-05-01,Court admission,Male,Black,25-29,Cook,Person,15
+2023-05-01,Court admission,Male,Black,25-29,Cook,Person,14
 2023-05-01,Court admission,Male,Black,25-29,Cook,Property,5
 2023-05-01,Court admission,Male,Black,25-29,Cook,Public Order,40
 2023-05-01,Court admission,Male,Black,25-29,DeKalb,Public Order,1
@@ -55921,7 +55921,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2023-05-01,Court admission,Male,Black,35-44,Cook,Drug,7
 2023-05-01,Court admission,Male,Black,35-44,Cook,Person,16
 2023-05-01,Court admission,Male,Black,35-44,Cook,Property,12
-2023-05-01,Court admission,Male,Black,35-44,Cook,Public Order,34
+2023-05-01,Court admission,Male,Black,35-44,Cook,Public Order,32
 2023-05-01,Court admission,Male,Black,35-44,Douglas,Drug,1
 2023-05-01,Court admission,Male,Black,35-44,DuPage,Drug,1
 2023-05-01,Court admission,Male,Black,35-44,DuPage,Property,1
@@ -56430,7 +56430,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2023-05-01,Technical violator,Male,Black,20-24,Will,Person,1
 2023-05-01,Technical violator,Male,Black,25-29,Champaign,Person,1
 2023-05-01,Technical violator,Male,Black,25-29,Champaign,Public Order,1
-2023-05-01,Technical violator,Male,Black,25-29,Cook,Person,14
+2023-05-01,Technical violator,Male,Black,25-29,Cook,Person,15
 2023-05-01,Technical violator,Male,Black,25-29,Cook,Property,5
 2023-05-01,Technical violator,Male,Black,25-29,Cook,Public Order,19
 2023-05-01,Technical violator,Male,Black,25-29,DeKalb,Person,1
@@ -56474,7 +56474,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2023-05-01,Technical violator,Male,Black,35-44,Cook,Drug,6
 2023-05-01,Technical violator,Male,Black,35-44,Cook,Person,17
 2023-05-01,Technical violator,Male,Black,35-44,Cook,Property,1
-2023-05-01,Technical violator,Male,Black,35-44,Cook,Public Order,12
+2023-05-01,Technical violator,Male,Black,35-44,Cook,Public Order,14
 2023-05-01,Technical violator,Male,Black,35-44,Douglas,Drug,1
 2023-05-01,Technical violator,Male,Black,35-44,Kane,Person,2
 2023-05-01,Technical violator,Male,Black,35-44,Kane,Property,1
@@ -57689,7 +57689,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2023-07-01,Court admission,Female,White,55-64,Franklin,Property,1
 2023-07-01,Court admission,Female,White,55-64,Jersey,Drug,1
 2023-07-01,Court admission,Female,White,55-64,Winnebago,Person,1
-2023-07-01,Court admission,Male,American Indian,30-34,Cook,Person,1
 2023-07-01,Court admission,Male,American Indian,55-64,Macoupin,Person,1
 2023-07-01,Court admission,Male,Asian,20-24,Cook,Property,1
 2023-07-01,Court admission,Male,Asian,35-44,McHenry,Property,1
@@ -58221,6 +58220,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2023-07-01,Technical violator,Female,White,35-44,Madison,Property,1
 2023-07-01,Technical violator,Female,White,35-44,Vermilion,Person,1
 2023-07-01,Technical violator,Female,White,55-64,Kane,Drug,1
+2023-07-01,Technical violator,Male,American Indian,30-34,Cook,Person,1
 2023-07-01,Technical violator,Male,Black,18-19,Winnebago,Property,1
 2023-07-01,Technical violator,Male,Black,20-24,Cook,Drug,1
 2023-07-01,Technical violator,Male,Black,20-24,Cook,Person,6
@@ -58690,7 +58690,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2023-08-01,Court admission,Male,Black,45-54,Boone,Public Order,1
 2023-08-01,Court admission,Male,Black,45-54,Champaign,Drug,2
 2023-08-01,Court admission,Male,Black,45-54,Cook,Drug,8
-2023-08-01,Court admission,Male,Black,45-54,Cook,Person,13
+2023-08-01,Court admission,Male,Black,45-54,Cook,Person,12
 2023-08-01,Court admission,Male,Black,45-54,Cook,Property,11
 2023-08-01,Court admission,Male,Black,45-54,Cook,Public Order,14
 2023-08-01,Court admission,Male,Black,45-54,Douglas,Drug,1
@@ -59207,7 +59207,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2023-08-01,Technical violator,Male,Black,35-44,Winnebago,Person,1
 2023-08-01,Technical violator,Male,Black,45-54,Champaign,Person,1
 2023-08-01,Technical violator,Male,Black,45-54,Cook,Drug,2
-2023-08-01,Technical violator,Male,Black,45-54,Cook,Person,12
+2023-08-01,Technical violator,Male,Black,45-54,Cook,Person,13
 2023-08-01,Technical violator,Male,Black,45-54,Cook,Property,4
 2023-08-01,Technical violator,Male,Black,45-54,Cook,Public Order,6
 2023-08-01,Technical violator,Male,Black,45-54,DuPage,Person,1
@@ -65201,7 +65201,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2024-04-01,Court admission,Male,Black,25-29,McDonough,Person,1
 2024-04-01,Court admission,Male,Black,25-29,McLean,Drug,1
 2024-04-01,Court admission,Male,Black,25-29,Peoria,Property,1
-2024-04-01,Court admission,Male,Black,25-29,Peoria,Public Order,2
+2024-04-01,Court admission,Male,Black,25-29,Peoria,Public Order,3
 2024-04-01,Court admission,Male,Black,25-29,St. Clair,Person,2
 2024-04-01,Court admission,Male,Black,25-29,St. Clair,Public Order,1
 2024-04-01,Court admission,Male,Black,25-29,Will,Person,2
@@ -65662,7 +65662,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2024-04-01,Technical violator,Male,Black,25-29,Jefferson,Person,1
 2024-04-01,Technical violator,Male,Black,25-29,Lake,Person,2
 2024-04-01,Technical violator,Male,Black,25-29,McLean,Person,2
-2024-04-01,Technical violator,Male,Black,25-29,Peoria,Public Order,1
 2024-04-01,Technical violator,Male,Black,25-29,Sangamon,Drug,1
 2024-04-01,Technical violator,Male,Black,25-29,Sangamon,Person,2
 2024-04-01,Technical violator,Male,Black,25-29,Sangamon,Public Order,1
@@ -66009,7 +66008,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2024-05-01,Court admission,Male,Black,30-34,Champaign,Person,1
 2024-05-01,Court admission,Male,Black,30-34,Champaign,Property,1
 2024-05-01,Court admission,Male,Black,30-34,Cook,Drug,3
-2024-05-01,Court admission,Male,Black,30-34,Cook,Person,14
+2024-05-01,Court admission,Male,Black,30-34,Cook,Person,15
 2024-05-01,Court admission,Male,Black,30-34,Cook,Property,3
 2024-05-01,Court admission,Male,Black,30-34,Cook,Public Order,17
 2024-05-01,Court admission,Male,Black,30-34,DuPage,Property,2
@@ -66546,7 +66545,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2024-05-01,Technical violator,Male,Black,25-29,Winnebago,Drug,1
 2024-05-01,Technical violator,Male,Black,25-29,Winnebago,Person,2
 2024-05-01,Technical violator,Male,Black,30-34,Cook,Drug,2
-2024-05-01,Technical violator,Male,Black,30-34,Cook,Person,15
+2024-05-01,Technical violator,Male,Black,30-34,Cook,Person,14
 2024-05-01,Technical violator,Male,Black,30-34,Cook,Property,2
 2024-05-01,Technical violator,Male,Black,30-34,Cook,Public Order,15
 2024-05-01,Technical violator,Male,Black,30-34,DuPage,Person,1
@@ -69364,7 +69363,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2024-09-01,Court admission,Male,Hispanic,55-64,Douglas,Person,1
 2024-09-01,Court admission,Male,Hispanic,55-64,Winnebago,Property,1
 2024-09-01,Court admission,Male,Hispanic,65-74,Cook,Drug,1
-2024-09-01,Court admission,Male,Hispanic,65-74,Cook,Public Order,1
+2024-09-01,Court admission,Male,Hispanic,65-74,Cook,Public Order,2
 2024-09-01,Court admission,Male,Hispanic,65-74,Kane,Public Order,1
 2024-09-01,Court admission,Male,Other,20-24,Cook,Property,1
 2024-09-01,Court admission,Male,Other,25-29,Cook,Public Order,1
@@ -69741,7 +69740,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2024-09-01,Technical violator,Male,Hispanic,45-54,Livingston,Person,1
 2024-09-01,Technical violator,Male,Hispanic,45-54,Will,Person,1
 2024-09-01,Technical violator,Male,Hispanic,55-64,Winnebago,Person,1
-2024-09-01,Technical violator,Male,Hispanic,65-74,Cook,Public Order,1
 2024-09-01,Technical violator,Male,Other,25-29,Randolph,Public Order,1
 2024-09-01,Technical violator,Male,Other,55-64,Cook,Property,1
 2024-09-01,Technical violator,Male,White,20-24,Henry,Person,2
@@ -75565,7 +75563,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2025-05-01,Court admission,Male,Black,18-19,Champaign,Public Order,1
 2025-05-01,Court admission,Male,Black,18-19,Cook,Person,4
 2025-05-01,Court admission,Male,Black,18-19,Cook,Property,5
-2025-05-01,Court admission,Male,Black,18-19,Cook,Public Order,2
+2025-05-01,Court admission,Male,Black,18-19,Cook,Public Order,1
 2025-05-01,Court admission,Male,Black,18-19,Jackson,Person,1
 2025-05-01,Court admission,Male,Black,18-19,Kane,Public Order,1
 2025-05-01,Court admission,Male,Black,18-19,McLean,Public Order,1
@@ -75842,12 +75840,11 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2025-05-01,Court admission,Male,Hispanic,55-64,McHenry,Person,1
 2025-05-01,Court admission,Male,Hispanic,55-64,McHenry,Public Order,1
 2025-05-01,Court admission,Male,Hispanic,65-74,Grundy,Drug,1
-2025-05-01,Court admission,Male,Other,18-19,Cook,Public Order,2
+2025-05-01,Court admission,Male,Other,18-19,Cook,Public Order,3
 2025-05-01,Court admission,Male,Other,20-24,Cook,Property,1
 2025-05-01,Court admission,Male,Other,20-24,Cook,Public Order,1
 2025-05-01,Court admission,Male,Other,30-34,Cook,Property,2
 2025-05-01,Court admission,Male,Other,30-34,Cook,Public Order,1
-2025-05-01,Court admission,Male,Other,35-44,Cook,Public Order,1
 2025-05-01,Court admission,Male,White,18-19,Cook,Public Order,1
 2025-05-01,Court admission,Male,White,18-19,Livingston,Person,1
 2025-05-01,Court admission,Male,White,18-19,Macon,Person,1
@@ -75960,7 +75957,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2025-05-01,Court admission,Male,White,35-44,Cook,Drug,3
 2025-05-01,Court admission,Male,White,35-44,Cook,Person,4
 2025-05-01,Court admission,Male,White,35-44,Cook,Property,2
-2025-05-01,Court admission,Male,White,35-44,Cook,Public Order,3
+2025-05-01,Court admission,Male,White,35-44,Cook,Public Order,4
 2025-05-01,Court admission,Male,White,35-44,Crawford,Property,1
 2025-05-01,Court admission,Male,White,35-44,Douglas,Person,1
 2025-05-01,Court admission,Male,White,35-44,Douglas,Public Order,1
@@ -76424,8 +76421,8 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2025-06-01,Court admission,Male,Black,18-19,Winnebago,Public Order,1
 2025-06-01,Court admission,Male,Black,20-24,Champaign,Public Order,3
 2025-06-01,Court admission,Male,Black,20-24,Christian,Person,1
-2025-06-01,Court admission,Male,Black,20-24,Cook,Person,18
-2025-06-01,Court admission,Male,Black,20-24,Cook,Property,7
+2025-06-01,Court admission,Male,Black,20-24,Cook,Person,17
+2025-06-01,Court admission,Male,Black,20-24,Cook,Property,8
 2025-06-01,Court admission,Male,Black,20-24,Cook,Public Order,30
 2025-06-01,Court admission,Male,Black,20-24,DuPage,Person,3
 2025-06-01,Court admission,Male,Black,20-24,DuPage,Public Order,2
@@ -76455,7 +76452,6 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2025-06-01,Court admission,Male,Black,25-29,Cook,Person,14
 2025-06-01,Court admission,Male,Black,25-29,Cook,Property,5
 2025-06-01,Court admission,Male,Black,25-29,Cook,Public Order,23
-2025-06-01,Court admission,Male,Black,25-29,DeKalb,Person,1
 2025-06-01,Court admission,Male,Black,25-29,DeKalb,Public Order,1
 2025-06-01,Court admission,Male,Black,25-29,DuPage,Public Order,1
 2025-06-01,Court admission,Male,Black,25-29,Grundy,Public Order,1
@@ -76619,9 +76615,9 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2025-06-01,Court admission,Male,Hispanic,30-34,Winnebago,Public Order,1
 2025-06-01,Court admission,Male,Hispanic,35-44,Boone,Drug,1
 2025-06-01,Court admission,Male,Hispanic,35-44,Cook,Drug,4
-2025-06-01,Court admission,Male,Hispanic,35-44,Cook,Person,5
+2025-06-01,Court admission,Male,Hispanic,35-44,Cook,Person,6
 2025-06-01,Court admission,Male,Hispanic,35-44,Cook,Property,2
-2025-06-01,Court admission,Male,Hispanic,35-44,Cook,Public Order,7
+2025-06-01,Court admission,Male,Hispanic,35-44,Cook,Public Order,8
 2025-06-01,Court admission,Male,Hispanic,35-44,De Witt,Person,1
 2025-06-01,Court admission,Male,Hispanic,35-44,DuPage,Drug,1
 2025-06-01,Court admission,Male,Hispanic,35-44,DuPage,Person,1
@@ -76648,15 +76644,14 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2025-06-01,Court admission,Male,Hispanic,75<,McHenry,Drug,1
 2025-06-01,Court admission,Male,Other,18-19,Cook,Public Order,2
 2025-06-01,Court admission,Male,Other,20-24,Cook,Drug,1
-2025-06-01,Court admission,Male,Other,20-24,Cook,Person,1
-2025-06-01,Court admission,Male,Other,20-24,Cook,Property,4
+2025-06-01,Court admission,Male,Other,20-24,Cook,Person,2
+2025-06-01,Court admission,Male,Other,20-24,Cook,Property,3
 2025-06-01,Court admission,Male,Other,20-24,Cook,Public Order,4
 2025-06-01,Court admission,Male,Other,25-29,Cook,Public Order,2
 2025-06-01,Court admission,Male,Other,25-29,Whiteside,Property,1
 2025-06-01,Court admission,Male,Other,30-34,Cook,Person,1
 2025-06-01,Court admission,Male,Other,30-34,Cook,Public Order,1
-2025-06-01,Court admission,Male,Other,35-44,Cook,Person,3
-2025-06-01,Court admission,Male,Other,35-44,Cook,Public Order,1
+2025-06-01,Court admission,Male,Other,35-44,Cook,Person,2
 2025-06-01,Court admission,Male,Other,55-64,Cook,Property,1
 2025-06-01,Court admission,Male,White,18-19,Cook,Public Order,2
 2025-06-01,Court admission,Male,White,18-19,Peoria,Person,1
@@ -76913,6 +76908,7 @@ month,admtyp,sex,race,age_group,county,crime_class,n
 2025-06-01,Technical violator,Male,Black,25-29,Cook,Person,9
 2025-06-01,Technical violator,Male,Black,25-29,Cook,Property,2
 2025-06-01,Technical violator,Male,Black,25-29,Cook,Public Order,10
+2025-06-01,Technical violator,Male,Black,25-29,DeKalb,Person,1
 2025-06-01,Technical violator,Male,Black,25-29,DuPage,Person,1
 2025-06-01,Technical violator,Male,Black,25-29,Jefferson,Person,1
 2025-06-01,Technical violator,Male,Black,25-29,Lake,Public Order,1

@@ -33,6 +33,22 @@ def reset_button():
     return ui.input_action_button("reset", "Reset filters", class_="btn-outline-secondary btn-sm w-100 mb-2")
 
 
+def download_button(id: str, what: str):
+    """
+    "Download CSV" link-button for a viz.download_csv output. `what` names the chart or
+    table; it is read out after the visible label ("Download CSV of ..."), so every
+    button has a distinct accessible name that still starts with the words on screen.
+    """
+    return ui.download_button(id, ["Download CSV", ui.span(f" of {what}", class_="visually-hidden")],
+                              icon=ui.HTML('<span aria-hidden="true">&#8595;</span>'),
+                              class_="btn-outline-secondary btn-sm download-csv")
+
+
+def download_footer(id: str, what: str, *notes):
+    """Card footer holding the card's notes (if any) and its "Download CSV" button."""
+    return ui.card_footer(ui.div(*notes, download_button(id, what), class_="download-row"))
+
+
 def selected(input, id: str, all_choices) -> list:
     """Chosen values for a multi-select, or every choice when nothing is chosen."""
     vals = input[id]() if id in input else None
@@ -60,4 +76,5 @@ def reset_demo(has_crime: bool = True):
 
 
 def note(text: str):
-    return ui.p(text, class_="text-muted small mb-0")
+    """Small muted note; a \n in `text` starts a new line (.note in www/styles.css)."""
+    return ui.p(text, class_="note text-muted small mb-0")
