@@ -21,7 +21,6 @@ DAYS_PER_YEAR = 365
 def _last_observed_year() -> int:
     return int(data.admissions()["month"].max().year)
 
-
 def _with_return(df: pd.DataFrame, types: list[str], window_years: int) -> pd.DataFrame:
     """
     Add days_to_return (first return of any selected type), return_type (which type that
@@ -47,7 +46,10 @@ def page_ui():
     r = data.recidivism()
     counties = ["All counties"] + sorted(r["county"].dropna().unique())
     return ui.layout_sidebar(
+        
+        
         ui.sidebar(
+            
             reset_button(),
             ui.input_radio_buttons("window", "Return within", choices={"1": "1 year", "2": "2 years", "3": "3 years"},
                                    selected="3", inline=True),
@@ -55,12 +57,23 @@ def page_ui():
             ui.input_select("county", "Sentencing county", choices=counties, selected="All counties"),
             crime_filter(),
             *demo_filters(),
-            note("A release is anyone leaving IDOC custody to mandatory supervised release or at "
-                 "sentence expiration (2018 onward). A return is a later IDOC admission of a selected "
-                 "type. Only cohorts old enough to be fully observed for the chosen window are shown."),
+            note("A release is anyone leaving IDOC custody to mandatory supervised release or full release from "
+                 "DOC custody (2018 onward). A return is a DOC admission of a person relseased from prison in the selected "
+                 "time horizon."),
             width=310,
         ),
+
+        ui.div(
+            ui.tags.strong("These are NOT official IDOC statistics. "),
+            'The data shown here are not official IDOC recidivism or readmissions rates but an ICJIA analysis of IDOC '
+            'public data. Certain cases are excluded from IDOC public data for security reasons. If you’d like to '
+            'refer to official IDOC recidivism rates you can find them here: '
+            'https://idoc.illinois.gov/content/dam/soi/en/web/idoc/reportsandstatistics/documents/FY22-Online-Recidivism-Table.pdf.',
+            class_="callout",
+        ),
+
         ui.layout_column_wrap(
+            
             ui.value_box("Recidivism rate", ui.output_text("kpi_rate"), ui.output_text("kpi_rate_sub"),
                          theme="primary"),
             ui.value_box("Releases in cohorts", ui.output_text("kpi_released"), ui.output_text("kpi_cohorts")),
@@ -70,29 +83,39 @@ def page_ui():
         ui.layout_columns(
             ui.card(ui.card_header("Recidivism rate by release year"), viz.output_plot("year_chart"),
                     download_footer("year_csv", "the recidivism by release year chart",
-                                    note("Colored by the type of the first return."))),
+                                    note('Above is a bar chart showing the revidivism for each annual release cohort. '
+                                         'Each bar is colored by their release reason.'))),
+
             ui.card(ui.card_header("Cumulative share returned, by months since release"),
                     viz.output_plot("curve_chart"),
                     download_footer("curve_csv", "the cumulative share returned chart",
-                                    note("By race. Each line stops at the selected window."))),
+                                    note('Above is a line plot that shows the increase in recidivim by each month for '
+                                         'each race reported by the DOC.'))),
             col_widths={"sm": 12, "xl": [5, 7]},
         ),
         ui.layout_columns(
             ui.card(ui.card_header("By race"), viz.output_plot("race_chart"),
-                    download_footer("race_csv", "the recidivism by race chart")),
+                    download_footer("race_csv", "the recidivism by race chart",
+                                    note('Aboce is a bar chart showing the average recidivism rate for each race.'))),
+
             ui.card(ui.card_header("By age at release"), viz.output_plot("age_chart"),
-                    download_footer("age_csv", "the recidivism by age at release chart")),
+                    download_footer("age_csv", "the recidivism by age at release chart",
+                                    note('Above is a bar chart showing the average recidivism rate for each age group.'))),
+
             ui.card(ui.card_header("By offense class"), viz.output_plot("crime_chart"),
-                    download_footer("crime_csv", "the recidivism by offense class chart")),
+                    download_footer("crime_csv", "the recidivism by offense class chart",
+                                    note('Above is a bar chart showing the average recidivism rate for each offense class.'))),
+                                    
             col_widths={"sm": 12, "xl": [4, 4, 4]},
         ),
         ui.card(ui.card_header("Table view - release cohorts"), ui.output_data_frame("table"),
-                download_footer("table_csv", "the release cohorts table")),
+                download_footer("table_csv", "the release cohorts table",
+                                note('Above is a table showing each annual cohorts\' release year, reamissions and recdivism rate.'))),
     )
-
 
 @module.server
 def page_server(input, output, session):
+    
     @reactive.effect
     @reactive.event(input.reset)
     def _reset():
@@ -111,6 +134,7 @@ def page_server(input, output, session):
 
     @reactive.calc
     def cohort() -> pd.DataFrame:
+        
         df = data.recidivism()
         df = df.loc[df["release_year"] <= _last_observed_year() - window()]
         df = apply_demo(df, input)
@@ -119,7 +143,9 @@ def page_server(input, output, session):
         return _with_return(df, types(), window())
 
     @reactive.calc
+    
     def returners() -> pd.DataFrame:
+        
         c = cohort()
         return c.loc[c["returned"]]
 

@@ -20,10 +20,10 @@ www/                      served at /www
   plots.js                re-fits charts when their card resizes or their tab opens
   sortable.js             click-to-sort for viz.sortable_table
 data/
-  build_data.py           rebuilds every CSV below from the DuckDB source
-  retrieve_data.py        original census x prison join (called by build_data.py)
-  data_download.csv       Comptroller expenditures by object code (downloaded manually)
-  inc_data.csv            census cells x prison counts on June 30 of each year
+  build_data.py           rebuilds every file below in its final shape (dashboard/data.py only reads them)
+  data_download.csv       Comptroller expenditures by object code (downloaded manually; input to expenses.csv)
+  expenses.csv            Comptroller spend by object and month (fiscal year + calendar month)
+  rates.csv               June 30 prison counts x ACS residents per year / county / age / sex / race
   population_snapshots.csv  IDOC headcount on June 30 of each year
   admissions.csv          monthly admissions by type / sex / race / age / county / offense
   exits.csv               monthly exits by reason / sex / race / age / county / offense

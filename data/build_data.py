@@ -4,18 +4,18 @@ Build every CSV the dashboard reads.
 Run from anywhere:  python data/build_data.py
 
 Steps
-  1. runs retrieve_data.py (unchanged) -> inc_data.csv           (rates & disparities)
+  1. rates.csv                  June 30 prison counts x ACS residents (population & rates)
   2. population_snapshots.csv   IDOC headcount on June 30 each year (expense per inmate)
   3. admissions.csv             monthly admissions, aggregated     (admissions & exits)
   4. exits.csv                  monthly exits, aggregated          (admissions & exits)
   5. recidivism.csv             one row per release event, de-identified
   6. il_counties.geojson        Illinois county boundaries         (map)
+  7. expenses.csv               Comptroller spend by object and month (expenses)
 
-data_download.csv (IDOC expenditures) is downloaded separately and is read as-is.
+data_download.csv (Comptroller expenditures) is downloaded by hand; step 7 reads it.
+Every file is written in its final shape, so the dashboard only reads them (dashboard/data.py).
 """
 import json
-import os
-import runpy
 import urllib.request
 import warnings
 from pathlib import Path
@@ -36,6 +36,15 @@ AGE_BINS = [-np.inf, 18, 20, 25, 30, 35, 45, 55, 65, 75, np.inf]
 RECID_FIRST_RELEASE = "2018-01-01"
 # release reasons that put someone back in the community (at risk of returning)
 RECID_RELEASE_REASONS = ("Not Discharged", "Expiration of Sentence")
+CRIME_COLS = ['Person', 'Property', 'Public Order', 'Drug']
+# ACS "Hispanic" is an ethnicity overlay: those residents are also counted in one of the
+# race groups, so a total across races has to leave it out or it double-counts them
+HISPANIC = 'Hispanic'
+# ACS age bands folded into the IDOC age groups
+CENSUS_AGES = {'<5': '>18', '5-9': '>18', '10-14': '>18', '15-17': '>18', '75-84': '75<', '85<': '75<'}
+# census cells smaller than this are dropped
+MIN_CELL = 10
+MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 # IDOC spellings -> census / map spellings
 COUNTY_FIXES = {'DeWitt': 'De Witt', 'Dupage': 'DuPage', 'Lasalle': 'LaSalle'}
 
@@ -74,19 +83,76 @@ def month_floor(s: pd.Series) -> pd.Series:
 
 
 # ---------------------------------------------------------------- 1. rates
-def build_inc_data():
-    print("1/6 inc_data.csv (retrieve_data.py)")
-    cwd = os.getcwd()
-    os.chdir(DATA_DIR)
-    try:
-        runpy.run_path(str(DATA_DIR / "retrieve_data.py"), run_name="__main__")
-    finally:
-        os.chdir(cwd)
+def county_key(s: pd.Series) -> pd.Series:
+    """Join key for a county name in either source ('De Witt County, Illinois' / 'DeWitt' -> 'dewitt')."""
+    return s.str.split(' Cou').str[0].str.replace('e W', 'ew').str.lower()
+
+
+def load_census(con) -> pd.DataFrame:
+    """ACS residents per (year, county, age, sex, race), in the IDOC age groups and race names."""
+    c = con.execute("SELECT * FROM illinois_demo").fetchdf().drop_duplicates()
+    c = c.loc[c['year'].notna()].copy()
+    c['age'] = c['age'].replace(CENSUS_AGES)
+    c.loc[c['race'].str.contains('NATIVE'), 'race'] = 'AMERICAN INDIAN'
+    c.loc[c['race'].str.contains('TWO'), 'race'] = 'BI-RACIAL'
+    # the regrouping above leaves several rows per cell: add them up
+    c['value'] = c['value'].astype(int)
+    c = c.groupby(['age', 'sex', 'race', 'year', 'county_name'])['value'].sum().reset_index()
+    c = c.loc[c['value'] >= MIN_CELL].copy()
+    c['race'] = c['race'].str.replace('_OR_AFRICAN_AMERICAN', '').str.replace('_OR_LATINO', '').str.title()
+    c['sex'] = c['sex'].str.title()
+    c['key'] = county_key(c['county_name'])
+    c['county'] = c['county_name'].str.replace(' County, Illinois', '', regex=False)
+    return c.rename(columns={'year': 'census_year', 'value': 'gen_population'})
+
+
+def load_prison_june(con) -> pd.DataFrame:
+    """People in custody on June 30 by (year, county key, age, sex, race), one column per offense class."""
+    p = con.execute("""
+        SELECT * FROM prison_population_data_sets
+        WHERE EXTRACT(month FROM record_dt) = 6        -- June 30: end of the state fiscal year
+    """).fetchdf()
+    invalid = (p['sex'].isin(['nan', 'B']) | p['race'].isin(['nan', 'Unknown', 'Not Assigned'])
+               | p['race'].isna() | p['birthdt'].isna())
+    p = p.loc[~invalid].copy()
+    p['age'] = age_group(p['cstdt'], p['birthdt'])
+    p = p.merge(crime_map(), left_on='hofnscd', right_on='state_description', how='left')
+    p['year'] = p['record_dt'].dt.year
+    p['key'] = p['stnccty'].str.lower()
+    return (p.groupby(['year', 'key', 'age', 'sex', 'race', 'crime_class'])['docnbr'].count()
+             .unstack('crime_class').reindex(columns=CRIME_COLS).fillna(0).reset_index())
+
+
+def build_rates(con):
+    """
+    One row per (prison year, county, age, sex, race): the ACS residents of that cell and the
+    people in custody from it on June 30. Every prison year gets every census cell exactly
+    once; years after the newest ACS reuse it. People who match no census cell (out of
+    state, unknown county, cells under MIN_CELL) are left out. The rates themselves are
+    worked out in the app after the filters are applied - rates can't be added up, counts can.
+
+    `gen_population` is the ACS count of the row's own group; `residents` is the same except
+    zero on Hispanic rows, so summing it over any set of races counts each person once.
+    """
+    print("1/7 rates.csv")
+    census, prison = load_census(con), load_prison_june(con)
+    first, last = int(census['census_year'].min()), int(census['census_year'].max())
+    years = pd.DataFrame({'year': range(first, int(prison['year'].max()) + 1)})
+    years['census_year'] = years['year'].clip(first, last)
+    grid = years.merge(census, on='census_year')
+    out = grid.merge(prison, on=['year', 'key', 'age', 'sex', 'race'], how='left')
+    out[CRIME_COLS] = out[CRIME_COLS].fillna(0)
+    out['total'] = out[CRIME_COLS].sum(axis=1)
+    out['residents'] = out['gen_population'].where(out['race'] != HISPANIC, 0)
+    out = out[['year', 'census_year', 'county', 'age', 'sex', 'race', 'gen_population', 'residents']
+              + CRIME_COLS + ['total']]
+    out.to_csv(DATA_DIR / "rates.csv", index=False)
+    print(f"    {len(out):,} rows, {first}-{out['year'].max()}, ACS {first}-{last}")
 
 
 # ---------------------------------------------------------------- 2. population
 def build_population(con):
-    print("2/6 population_snapshots.csv")
+    print("2/7 population_snapshots.csv")
     pop = con.execute("""
         SELECT record_dt, COUNT(DISTINCT docnbr) AS population
         FROM prison_population_data_sets
@@ -113,7 +179,7 @@ def load_admissions(con) -> pd.DataFrame:
 
 
 def build_admissions(adm: pd.DataFrame):
-    print("3/6 admissions.csv")
+    print("3/7 admissions.csv")
     adm = adm.assign(month=month_floor(adm['admitdt']))
     out = (adm.groupby(['month', 'admtyp', 'sex', 'race', 'age_group', 'county', 'crime_class'],
                        dropna=False, observed=True)
@@ -143,7 +209,7 @@ def load_exits(con) -> pd.DataFrame:
 
 
 def build_exits(ex: pd.DataFrame):
-    print("4/6 exits.csv")
+    print("4/7 exits.csv")
     ex = ex.assign(month=month_floor(ex['release_dt']))
     out = (ex.groupby(['month', 'exit_reason', 'discrsn', 'sex', 'race', 'age_group',
                        'county', 'crime_class', 'relinst'], dropna=False, observed=True)
@@ -153,7 +219,7 @@ def build_exits(ex: pd.DataFrame):
 
 # ---------------------------------------------------------------- 5. recidivism
 def build_recidivism(adm: pd.DataFrame, ex: pd.DataFrame):
-    print("5/6 recidivism.csv")
+    print("5/7 recidivism.csv")
     rel = ex.loc[ex['discrsn'].isin(RECID_RELEASE_REASONS)
                  & (ex['release_dt'] >= RECID_FIRST_RELEASE),
                  ['docnbr', 'release_dt', 'sex', 'race', 'age_group', 'county',
@@ -185,7 +251,7 @@ def build_recidivism(adm: pd.DataFrame, ex: pd.DataFrame):
 
 # ---------------------------------------------------------------- 6. geojson
 def build_geojson():
-    print("6/6 il_counties.geojson")
+    print("6/7 il_counties.geojson")
     target = DATA_DIR / "il_counties.geojson"
     if target.exists():
         print("    already present, skipping download")
@@ -197,6 +263,22 @@ def build_geojson():
     for f in il['features']:
         f['properties'] = {'name': f['properties']['NAME'], 'fips': f['id']}
     target.write_text(json.dumps(il))
+
+
+# ---------------------------------------------------------------- 7. expenses
+def build_expenses():
+    """
+    Comptroller spend by object and month. The Comptroller's "Year" is the state fiscal
+    year (July-June), so Jul-Dec rows belong to the previous calendar year; `year` keeps
+    the fiscal year and `dt` is the real calendar month.
+    """
+    print("7/7 expenses.csv")
+    df = pd.read_csv(DATA_DIR / "data_download.csv")
+    df = df.rename(columns={"Object": "object", "Object_cat": "category", "Year": "year"})
+    month_num = df["month"].map({m: i for i, m in enumerate(MONTHS, 1)})
+    cal_year = df["year"] - (month_num >= 7).astype(int)
+    df["dt"] = pd.to_datetime(dict(year=cal_year, month=month_num, day=1))
+    df[["year", "month", "dt", "object", "category", "amount"]].to_csv(DATA_DIR / "expenses.csv", index=False)
 
 
 # ---------------------------------------------------------------- checks
@@ -211,9 +293,9 @@ def check_county_names(adm: pd.DataFrame):
 
 
 if __name__ == "__main__":
-    build_inc_data()
     con = duckdb.connect(DB_PATH, read_only=True)
     try:
+        build_rates(con)
         build_population(con)
         adm = load_admissions(con)
         ex = load_exits(con)
@@ -223,5 +305,6 @@ if __name__ == "__main__":
     build_exits(ex)
     build_recidivism(adm, ex)
     build_geojson()
+    build_expenses()
     check_county_names(adm)
     print("done")

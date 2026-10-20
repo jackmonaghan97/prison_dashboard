@@ -18,19 +18,8 @@ def fiscal_year(dt: pd.Series) -> pd.Series:
 
 @lru_cache
 def expenses() -> pd.DataFrame:
-    
-    """
-    Comptroller spend by object and month. The Comptroller's "Year" is the state fiscal
-    year (July-June), so Jul-Dec rows belong to the previous calendar year; `year` keeps
-    the fiscal year and `dt` is the real calendar month.
-    """
-    df = pd.read_csv(DATA_DIR / "data_download.csv")
-    df = df.rename(columns={"Object": "object", "Object_cat": "category", "Year": "year"})
-    month_num = df["month"].map({m: i for i, m in enumerate(
-        ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], 1)})
-    cal_year = df["year"] - (month_num >= 7).astype(int)
-    df["dt"] = pd.to_datetime(dict(year=cal_year, month=month_num, day=1))
-    return df[["year", "month", "dt", "object", "category", "amount"]]
+    """Comptroller spend by object and month; `year` is the fiscal year, `dt` the calendar month."""
+    return pd.read_csv(DATA_DIR / "expenses.csv", parse_dates=["dt"])
 
 
 @lru_cache
@@ -40,56 +29,23 @@ def population_snapshots() -> pd.DataFrame:
     df["fiscal_year"] = fiscal_year(df["record_dt"])
     return df
 
-
 CRIME_COLS = ["Person", "Property", "Public Order", "Drug"]
-# ACS "Hispanic" is an ethnicity overlay: those residents are also counted in one of the
-# race groups, so a total across races has to leave it out or it double-counts them
-HISPANIC = "Hispanic"
-
 
 @lru_cache
 def rates() -> pd.DataFrame:
-    
-    '''
-    Calculating rates for Population and Rates dashboad. One row per (prison year,
-    county, age, sex, race) and FY prison counts. inc_data.csv is census-cell x
-    prison-year, so a census year with several prison years (2024 -> 2024/25) repeats its population;
-    rebuild the grid here so every prison year has every census cell exactly once.
+    """
+    One row per (prison year, county, age, sex, race) with the ACS residents and the June 30
+    prison counts (see build_rates in data/build_data.py). `residents` is `gen_population`
+    with the Hispanic overlay zeroed, so a total across races counts each person once.
+    """
+    return pd.read_csv(DATA_DIR / "rates.csv")
 
-    `gen_population` is the ACS count of the row's own group; `residents` is the same
-    except zero on Hispanic rows, so summing it over any set of races counts each person
-    once (see HISPANIC).
-    '''
-
-    df = pd.read_csv(DATA_DIR / "inc_data.csv")
-    df["county"] = df["county_name"].str.replace(" County, Illinois", "", regex=False)
-    df["sex"] = df["sex"].str.title()
-    df["race"] = df["race"].str.title()
-    key = ["county", "age", "sex", "race"]
-
-    # accidently duplicating cvensus years.
-    census = df.drop_duplicates(["year_cen"] + key)[["year_cen"] + key + ["gen_population"]]
-    prison = df.loc[df["total"] > 0, ["year_pri"] + key + CRIME_COLS]
-    prison["year_pri"] = prison["year_pri"].astype(int)
-
-    # select census ranges and apply prison years outside of range to most recent census year
-    census_years = (int(census["year_cen"].min()), int(census["year_cen"].max()))
-    years = pd.DataFrame({"year": range(census_years[0], int(prison["year_pri"].max()) + 1)})
-    years["year_cen"] = years["year"].clip(*census_years)   # later prison years reuse the newest ACS
-    grid = years.merge(census, on="year_cen")
-    out = grid.merge(prison, left_on=["year"] + key, right_on=["year_pri"] + key, how="left")
-    
-    out[CRIME_COLS] = out[CRIME_COLS].fillna(0)
-    out["total"] = out[CRIME_COLS].sum(axis=1)
-    out["residents"] = out["gen_population"].where(out["race"] != HISPANIC, 0)
-    return out[["year", "county", "age", "sex", "race", "gen_population", "residents"] + CRIME_COLS + ["total"]]
 
 def census_years() -> tuple[int, int]:
-    
-    '''First and last ACS year in inc_data.csv'''
+    """First and last ACS year behind the rates."""
+    y = rates()["census_year"]
+    return int(y.min()), int(y.max())
 
-    df = pd.read_csv(DATA_DIR / "inc_data.csv", usecols=["year_cen"])
-    return int(df["year_cen"].min()), int(df["year_cen"].max())
 
 @lru_cache
 def admissions() -> pd.DataFrame:

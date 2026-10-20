@@ -5,7 +5,8 @@ from shiny import module, reactive, render, ui
 from .. import data, viz
 from ..common import apply_demo, crime_filter, demo_filters, download_footer, note, reset_button, reset_demo
 
-GRAIN = {"M": "Month", "Q": "Quarter", "Y": "Year"}
+# always by quarter: months are too granular
+GRAIN, PERIOD = "Q", "Quarter"
 # the COVID quarter: IDOC's population dropped by a quarter in April-June 2020
 COVID_Q = (pd.Timestamp("2020-04-01"), pd.Timestamp("2020-06-30"))
 MSR = "Mandatory supervised release (MSR)"
@@ -15,12 +16,10 @@ EXPIRATION = "Expiration of Sentence"
 def _period(s: pd.Series, grain: str) -> pd.Series:
     return s.dt.to_period(grain).dt.to_timestamp()
 
-
 def _labels(index: pd.DatetimeIndex, grain: str) -> list[str]:
     if grain == "Q":
         return [f"Q{d.quarter} {d.year}" for d in index]
     return list(index.strftime({"M": "%b %Y", "Y": "%Y"}[grain]))
-
 
 def _reason_group(reason: pd.Series) -> pd.Series:
     """Every 'MSR: ...' sub-reason is one category."""
@@ -29,20 +28,24 @@ def _reason_group(reason: pd.Series) -> pd.Series:
 
 @module.ui
 def page_ui():
+    
     adm, ex = data.admissions(), data.exits()
     y0 = int(adm["month"].min().year)
     y1 = int(min(adm["month"].max(), ex["month"].max()).year)
     counties = ["All counties"] + sorted(set(adm["county"].dropna()) | set(ex["county"].dropna()))
+    
     return ui.layout_sidebar(
+        
         ui.sidebar(
             reset_button(),
             ui.input_slider("years", "Years", min=y0, max=y1, value=(y0, y1), step=1, sep=""),
-            ui.input_radio_buttons("grain", "Show by", choices=GRAIN, selected="Q", inline=True),
             ui.input_select("county", "Sentencing county", choices=counties, selected="All counties"),
             crime_filter(),
             *demo_filters(),
             note(f"Admissions data begin in {y0}; exits are shown for the same period. "
-                 "County = county of sentencing."),
+                 "County = county of sentencing."
+                 'MSR abbreviates Mandatory Supervised Release. Parole in Illinois was discontinued in 1978 in place of'
+                 'MSR.'),
             width=310,
         ),
         ui.layout_column_wrap(
@@ -52,27 +55,34 @@ def page_ui():
             fill=False,
         ),
         ui.card(ui.card_header("Admissions, exits and net change"), viz.output_plot("flow_chart"),
-                ui.card_footer(note("Exits are drawn below zero; the line is net change "
-                                    "(admissions − exits). Yearly values are in the table view below."))),
+                ui.card_footer(note('The chart above shows the admission and exit flows from the DOC. '
+                                    'An orange bar shows the admissions, blue bar shows the exits, and '
+                                    'the line shows the net change for the quarter.'
+                    ))),
         ui.layout_columns(
+            
             ui.card(ui.card_header("Admissions by type"), viz.output_plot("type_chart"),
                     ui.output_ui("type_table"),
-                    download_footer("type_csv", "the admissions by type table")),
+                    download_footer(
+                        "type_csv", "the admissions by type table", note(
+                            'Above is a bar chart showing the amount of people admitted to the DOC for each quarter'
+                            'by their admission type.'))),
+            
             ui.card(ui.card_header("Exits by reason"), viz.output_plot("reason_chart"),
-                    download_footer("reason_csv", "the exits by reason chart",
-                                    note("MSR = mandatory supervised release (parole)."))),
+                    download_footer("reason_csv", "the exits by reason chart",note(
+                            'Above shows the amount of people released by the DOC by their release reason.'))),
             col_widths={"sm": 12, "xl": [7, 5]},
         ),
         ui.card(ui.card_header("Table view - by year"), ui.output_data_frame("table"),
                 download_footer("table_csv", "the yearly table",
-                                note("Admission shares are % of that year's admissions; exit shares are "
-                                     "% of that year's exits. Other exits = anything that is not MSR or "
-                                     "expiration of sentence (deaths, reversals, court orders, ...)."))),
+                                note("Above is a table that displays each year's percentage of admission and exits" \
+                                "by type."))),
     )
 
 
 @module.server
 def page_server(input, output, session):
+    
     adm_src, ex_src = data.admissions(), data.exits()
     y0 = int(adm_src["month"].min().year)
     y1 = int(min(adm_src["month"].max(), ex_src["month"].max()).year)
@@ -81,7 +91,6 @@ def page_server(input, output, session):
     @reactive.event(input.reset)
     def _reset():
         ui.update_slider("years", value=(y0, y1))
-        ui.update_radio_buttons("grain", selected="Q")
         ui.update_select("county", selected="All counties")
         reset_demo(has_crime=True)
 
@@ -104,7 +113,7 @@ def page_server(input, output, session):
 
     @reactive.calc
     def flows() -> pd.DataFrame:
-        g = input.grain()
+        g = GRAIN
         a = adm().assign(period=lambda d: _period(d["month"], g)).groupby("period")["n"].sum()
         e = ex().assign(period=lambda d: _period(d["month"], g)).groupby("period")["n"].sum()
         out = pd.DataFrame({"Admissions": a, "Exits": e}).fillna(0).sort_index()
@@ -153,10 +162,12 @@ def page_server(input, output, session):
     # ---- charts
     @viz.render_plot
     def flow_chart():
+        
         f = flows()
         if f.empty:
             return viz.empty_figure()
-        labels = _labels(f.index, input.grain())
+        labels = _labels(f.index, GRAIN)
+        
         fig = viz.figure(380, barmode="relative", bargap=0.25, hovermode="x unified",
                          yaxis=dict(tickformat=",.0f"))
         # admissions above the axis, exits below, net change as a line across both
@@ -173,7 +184,7 @@ def page_server(input, output, session):
                         hovertemplate="%{y:+,.0f}")
         fig.update_layout(xaxis=dict(type="category", tickangle=-45 if len(f) > 12 else 0))
         return viz.describe(fig, f"Bar chart of prison admissions (above zero) and exits (below zero) per "
-                                 f"{GRAIN[input.grain()].lower()}, {labels[0]} to {labels[-1]}, with a line for net "
+                                 f"{PERIOD.lower()}, {labels[0]} to {labels[-1]}, with a line for net "
                                  f"change. Totals: {f['Admissions'].sum():,.0f} admissions, {f['Exits'].sum():,.0f} "
                                  f"exits, net {f['Net change'].sum():+,.0f}; latest period {labels[-1]}: "
                                  f"{f['Admissions'].iloc[-1]:,.0f} admissions, {f['Exits'].iloc[-1]:,.0f} exits.")
@@ -181,7 +192,7 @@ def page_server(input, output, session):
     @reactive.calc
     def type_piv() -> pd.DataFrame:
         """Period x admission type, columns in ADMTYP_ORDER, index labelled for the grain."""
-        g = input.grain()
+        g = GRAIN
         a = adm().assign(period=lambda d: _period(d["month"], g))
         piv = a.pivot_table(index="period", columns="admtyp", values="n", aggfunc="sum").fillna(0)
         piv = piv[[t for t in viz.ADMTYP_ORDER if t in piv.columns]]
@@ -191,21 +202,21 @@ def page_server(input, output, session):
     @render.ui
     def type_table():
         piv = type_piv()
-        return None if piv.empty else viz.layer_table(piv, index_name=GRAIN[input.grain()])
+        return None if piv.empty else viz.layer_table(piv, index_name=PERIOD)
 
     def _file(what: str) -> str:
         county = "Illinois" if input.county() == "All counties" else input.county()
         return f"{what}_{county}_{year_label()}.csv".replace(" ", "_").replace("–", "-")
 
-    @viz.download_csv(lambda: _file(f"admissions_by_type_per_{GRAIN[input.grain()].lower()}"))
+    @viz.download_csv(lambda: _file(f"admissions_by_type_per_{PERIOD.lower()}"))
     def type_csv():
         out = type_piv().copy()
         out["Total"] = out.sum(axis=1)
-        return out.rename_axis(GRAIN[input.grain()]).reset_index()
+        return out.rename_axis(PERIOD).reset_index()
 
     @viz.render_plot
     def type_chart():
-        g = input.grain()
+        g = GRAIN
         piv = type_piv()
         if piv.empty:
             return viz.empty_figure(height=400)
@@ -217,7 +228,7 @@ def page_server(input, output, session):
                             hovertemplate=f"<b>{t}</b><br>%{{x}}: %{{y:,.0f}}<extra></extra>")
         fig.update_layout(xaxis=dict(type="category", tickangle=-45 if len(piv) > 12 else 0))
         tot = piv.sum()
-        return viz.describe(fig, f"Stacked bar chart of prison admissions by type per {GRAIN[g].lower()}, "
+        return viz.describe(fig, f"Stacked bar chart of prison admissions by type per {PERIOD.lower()}, "
                                  f"{labels[0]} to {labels[-1]}. Totals over the period: "
                                  f"{viz.alt_values((t, tot[t]) for t in viz.ADMTYP_ORDER if t in tot)}.")
 
@@ -261,7 +272,7 @@ def page_server(input, output, session):
         e["group"] = e["group"].where(e["group"].isin([MSR, EXPIRATION]), "Other")
         ex_typ = e.pivot_table(index="year", columns="group", values="n", aggfunc="sum").fillna(0)
 
-        years = sorted(set(adm_tot.index) | set(ex_tot.index))
+        years = sorted(set(adm_tot.index) | set(ex_tot.index), reverse=True)
         adm_tot, ex_tot = adm_tot.reindex(years).fillna(0), ex_tot.reindex(years).fillna(0)
 
         def share(piv, colname, total):

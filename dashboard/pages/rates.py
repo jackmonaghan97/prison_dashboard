@@ -25,11 +25,9 @@ def _residents(df: pd.DataFrame) -> float:
     alone = df["residents"].sum()
     return alone if alone else df["gen_population"].sum()
 
-
 def _rate(df: pd.DataFrame, col: str) -> float:
     pop = _residents(df)
     return df[col].sum() / pop * PER if pop else float("nan")
-
 
 def _rate_by(df: pd.DataFrame, by, col: str) -> pd.DataFrame:
     """Counts, residents (see _residents) and rate per group; `gen_population` is the denominator used."""
@@ -37,7 +35,6 @@ def _rate_by(df: pd.DataFrame, by, col: str) -> pd.DataFrame:
     g["gen_population"] = g["residents"].where(g["residents"] > 0, g["gen_population"])
     g["rate"] = g[col] / g["gen_population"] * PER
     return g.drop(columns="residents").rename(columns={col: "incarcerated"})
-
 
 @module.ui
 def page_ui():
@@ -116,7 +113,7 @@ def page_ui():
         ),
 
         ui.layout_columns(
-            ui.card(ui.card_header("Black : White and Hispanic : White disparity ratios over time"),
+            ui.card(ui.card_header("Black and hispanic disparity ratios over time"),
                     viz.output_plot("ratio_chart"), ui.output_ui("ratio_table"),
                     download_footer("ratio_csv", "the disparity ratio chart",
                                     note(
@@ -139,6 +136,7 @@ def page_ui():
 
 @module.server
 def page_server(input, output, session):
+    
     years = sorted(int(y) for y in data.rates()["year"].unique())
 
     @reactive.effect
@@ -157,47 +155,62 @@ def page_server(input, output, session):
         return input.offense()
 
     def _county(df: pd.DataFrame) -> pd.DataFrame:
+
+        # select counties
         if input.county() == "All counties":
             return df
         return df.loc[df["county"] == input.county()]
 
     @reactive.calc
     def demo_all() -> pd.DataFrame:
-        """Sex / race / age filters only - every county, every year (map, table, trend)."""
+
+        # select sex, race, and age to compute rates.
         df = data.rates()
-        mask = (isin_or_all(df["sex"], input.sex()) & isin_or_all(df["age"], input.age())
-                & isin_or_all(df["race"], input.race()))
+        mask = (
+            isin_or_all(df["sex"], input.sex()) &
+            isin_or_all(df["age"], input.age()) &
+            isin_or_all(df["race"], input.race()))
         return df.loc[mask]
 
     @reactive.calc
     def base() -> pd.DataFrame:
-        """Everything except the year and race filters (for B:W comparisons)."""
+        
+        # select age and sex only for dispairties
         df = data.rates()
-        return _county(df.loc[isin_or_all(df["sex"], input.sex()) & isin_or_all(df["age"], input.age())])
+        return _county(
+            df.loc[isin_or_all(df["sex"], input.sex()) &
+                   isin_or_all(df["age"], input.age())])
 
     @reactive.calc
     def year_df() -> pd.DataFrame:
+
+        # select year for dispairities
         b = base()
         return b.loc[b["year"] == input.year()]
 
     @reactive.calc
     def year_all() -> pd.DataFrame:
+
+        # select year for all tables
         d = demo_all()
         return d.loc[d["year"] == input.year()]
 
     @reactive.calc
     def selected() -> pd.DataFrame:
-        """All filters, selected year."""
+
+        # filter all tables for year
         return _county(year_all())
 
     @reactive.calc
     def trend() -> pd.DataFrame:
-        """All filters, every year."""
+
+        # filter disparity tables for years
         return _county(demo_all())
 
     @reactive.calc
     def disparity_by_year() -> pd.DataFrame:
-        """Rate per year for each DISPARITY group and White, and each group's ratio to White."""
+
+       # calculate disparities
         g = _rate_by(base(), ["year", "race"], col())
         piv = g.pivot(index="year", columns="race", values="rate").reindex(columns=[*DISPARITY, "White"])
         out = pd.DataFrame(index=piv.index)
@@ -209,30 +222,43 @@ def page_server(input, output, session):
 
     @reactive.calc
     def pop_by_year() -> pd.Series:
+        
+        # annual trend for timeseries
         return trend().groupby("year")[col()].sum().reindex(years).fillna(0)
 
     def _where() -> str:
+        
+        # county location str
         return "Illinois" if input.county() == "All counties" else f"{input.county()} County"
 
     # ---- KPIs
     @render.text
     def kpi_pop():
+        
+        # dt formating
         return viz.fmt_int(selected()[col()].sum())
 
     @render.text
     def kpi_pop_sub():
+        
+        # dt sentence
         return f"sentenced in {_where()}, June 30, {input.year()}"
 
     @render.text
     def kpi_rate():
+
         return f"{_rate(selected(), col()):,.0f}"
 
     @render.text
     def kpi_change_title():
+        
+        # py change
         return f"Change vs {input.year() - 1}"
 
     @render.text
     def kpi_change():
+
+        # calculate py change
         s = pop_by_year()
         prev = s.get(input.year() - 1)
         if prev is None or input.year() - 1 not in s.index:
@@ -242,6 +268,8 @@ def page_server(input, output, session):
 
     @render.text
     def kpi_change_sub():
+
+        # percent change display
         s = pop_by_year()
         prev = s.get(input.year() - 1)
         if not prev:
@@ -251,13 +279,19 @@ def page_server(input, output, session):
 
     @render.text
     def map_title():
+
+        #geomap title
         return f"Incarceration rate by sentencing county, June 30, {input.year()}"
 
     @render.text
     def trend_title():
+
+        # stacked chart title
         return f"People in custody by {BREAKDOWNS[input.breakdown()].lower()}, {_where()}"
 
     def _bar_title(what):
+
+        # bar title
         return f"{METRICS[input.metric()]} by {what}, {input.year()}"
 
     @render.text
@@ -274,15 +308,19 @@ def page_server(input, output, session):
 
     @render.text
     def table_title():
+        
+        # table title
         return f"Table view - by sentencing county, June 30, {input.year()}, {OFFENSE_CHOICES[col()].lower()}"
 
     # ---- charts
+
     @viz.render_plot
     def map_chart():
+        
         g = _rate_by(year_all(), "county", col())
         g = g.loc[g["gen_population"] > 0].set_index("county")
-        if g.empty:
-            return viz.empty_figure(height=480)
+        if g.empty: return viz.empty_figure(height=480)
+        
         highlight = None if input.county() == "All counties" else input.county()
         fig = viz.choropleth(
             data.il_counties(), g["rate"], height=480,
@@ -300,7 +338,8 @@ def page_server(input, output, session):
 
     @reactive.calc
     def trend_piv() -> tuple[pd.DataFrame, dict, object]:
-        """Year x group table behind the trend chart, with its colors and label function."""
+        
+        # format table
         df = trend()
         b = input.breakdown()
         if b == "offense":
@@ -319,6 +358,7 @@ def page_server(input, output, session):
 
     @viz.render_plot
     def trend_chart():
+        
         piv, colors, label = trend_piv()
         b = input.breakdown()
         if piv.empty or not piv.values.sum():
@@ -362,6 +402,8 @@ def page_server(input, output, session):
         return viz.layer_table(t, index_name=name, total=False)
 
     def _bar(by, order, colors, labels=None, height=300, what_by="group"):
+        
+        
         g = _bar_data(by, order)
         if g.empty or not g["incarcerated"].sum():
             return viz.empty_figure(height=height)
@@ -407,6 +449,7 @@ def page_server(input, output, session):
 
     @viz.render_plot
     def ratio_chart():
+        
         d = disparity_by_year()
         lines = {grp: d[f"{grp} : White"].dropna() for grp in DISPARITY}
         lines = {grp: r for grp, r in lines.items() if not r.empty}
@@ -416,14 +459,18 @@ def page_server(input, output, session):
                          margin=dict(r=96))
         # each line has its own color, dash and marker shape, and is named at its right-hand end,
         # so the two read apart without color or a legend
+        
         for grp, r in lines.items():
+            
             color = viz.RACE_COLOR[grp]
             dash, symbol = DISPARITY[grp]
             fig.add_scatter(name=f"{grp} : White", x=r.index, y=r.values, mode="lines+markers",
                             line=dict(color=color, width=2, dash=dash),
                             marker=dict(size=7, symbol=symbol, color=color, line=dict(color=viz.SURFACE, width=1)),
+            
                             hovertemplate=f"<b>{grp}</b> %{{x}}<br>%{{y:.2f}}× the White rate<extra></extra>")
-            fig.add_annotation(x=r.index[-1], y=r.iloc[-1], text=f"{grp} : White", showarrow=False,
+            
+            fig.add_annotation(x=r.index[-1], y=r.iloc[-1], text=f"{grp}", showarrow=False,
                                xanchor="left", xshift=8, font=dict(size=11, color=viz.INK_2),
                                bgcolor=viz.rgba(viz.SURFACE, 0.85))
         fig.add_hline(y=1, line=dict(color=viz.AXIS, width=1), annotation_text="parity",
